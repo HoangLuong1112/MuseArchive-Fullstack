@@ -1,4 +1,4 @@
-import SpotifyPlayer from "../component/SpotifyPlayer";
+import SpotifyPlayer from "../component/MusicPlayer";
 import NavBar from "./NavBar";
 
 export default function MainPage() {
