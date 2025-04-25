@@ -5,21 +5,35 @@ import { FaHome, FaSearch, FaBook, FaMusic, FaHeart, FaChevronRight, FaChevronLe
 
 interface SidebarProps extends React.HTMLProps<HTMLDivElement> {
     isCollapsed?: boolean;
+    onToggleCollapse?: () => void;
 }
 
-const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({ style, isCollapsed }, ref) => {
+const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({ style, isCollapsed, onToggleCollapse }, ref) => {
     return (
         <div
             ref={ref}
-            className={`bg-black text-white h-full p-4 flex flex-col justify-between transition-all duration-300`}
+            className={`bg-gradient-to-b from-[#1e1e1e] to-black text-white h-full p-4 flex flex-col justify-between transition-all duration-300 text-sm rounded-lg`} // Áp dụng text-sm cho toàn bộ sidebar
             style={style}
         >
             <div>
-                {/* Nút thu gọn / mở rộng
-                <button onClick={onToggleCollapse} className="text-white p-2">
-                    {isCollapsed ? <FaChevronRight className="text-2xl" /> : <FaChevronLeft className="text-2xl" />}
-                </button> */}
+                {/* Nút thu gọn / mở rộng */}
+                <div className="flex items-center">
+                    <button onClick={onToggleCollapse} className="text-white p-2">
+                        {isCollapsed ? <FaChevronRight className="text-1xl" /> : <FaChevronLeft className="text-1xl" />}
+                    </button>
+                </div>
 
+                {/* Thanh tìm kiếm với Icon */}
+                <div className="mb-6">
+                    <div className="flex items-center rounded p-2">
+                        {isCollapsed ? "" : 
+                        <><FaSearch className="text-white text-lg mr-2" /><input
+                                type="text"
+                                placeholder="Search"
+                                className="w-full text-white bg-black placeholder-gray-400 focus:outline-none rounded-lg p-2" /></>}
+
+                    </div>
+                </div>
 
 
                 {/* Navigation */}
@@ -47,6 +61,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({ style, isCollapsed }
         </div>
     );
 });
+
+
+
 
 interface NavItemProps {
     Icon: React.ElementType;

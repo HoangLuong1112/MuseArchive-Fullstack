@@ -7,7 +7,7 @@ const NavBar: React.FC = () => {
     const [showMenu, setShowMenu] = useState(false)
 
     return (
-        <div className="w-full h-16 px-6 flex items-center justify-between bg-neutral-900 text-white shadow-sm relative">
+        <div className="w-full h-16 px-6 flex items-center justify-between bg-black text-white shadow-sm relative py-4">
             {/* Left: Spotify logo */}
             <div className="flex items-center gap-2">
                 <img
