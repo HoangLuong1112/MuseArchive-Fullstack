@@ -29,15 +29,15 @@ export default function Playlist({ onSelect }: Props) {
     return (
         <div className="p-4 space-y-2">
         <h2 className="text-lg font-bold mb-2">Playlist</h2>
-        {songs.map((song, index) => (
-            <div key={index} className="p-2 flex items-center gap-4 bg-zinc-800 rounded-md hover:bg-zinc-700 cursor-pointer" onClick={() => onSelect(song)}>
-                <img src={song.albumArt} alt={song.title} className="w-12 h-12 object-cover rounded" />
-                <div>
-                    <p className="text-white font-medium">{song.title}</p>
-                    <p className="text-zinc-400 text-sm">{song.artist}</p>
+            {songs.map((song, index) => (
+                <div key={index} className="p-2 flex items-center gap-4 bg-zinc-800 rounded-md hover:bg-zinc-700 cursor-pointer" onClick={() => onSelect(song)}>
+                    <img src={song.albumArt} alt={song.title} className="w-12 h-12 object-cover rounded" />
+                    <div>
+                        <p className="text-white font-medium">{song.title}</p>
+                        <p className="text-zinc-400 text-sm">{song.artist}</p>
+                    </div>
                 </div>
-            </div>
-        ))}
+            ))}
         </div>
   );
 }
