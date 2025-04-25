@@ -1,0 +1,12 @@
+{
+    "name": "Taylor Album",   
+    "musician": "Taylor Swift",
+    "songslist": [
+        {
+            "name": "Blank Space"
+        },
+        {
+            "name": "Shake It Off"
+        }
+    ]
+}

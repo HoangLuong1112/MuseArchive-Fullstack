@@ -100,7 +100,7 @@ export default function MusicPlayer({ song }: Props) {
         <div className="fixed bottom-0 left-0 w-full h-[80px] bg-zinc-900 text-white flex items-center justify-between px-6 shadow-xl z-50">
             
             {/* Left: Song Info */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-50">
                 <img src={song.albumArt} alt="Album Art" className="w-12 h-12 rounded-md object-cover" />
                 <div>
                     <h4 className="text-sm font-semibold">{song.title}</h4>
