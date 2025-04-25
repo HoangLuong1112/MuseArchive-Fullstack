@@ -1,9 +1,15 @@
 'use client';
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1,  Volume2 } from "lucide-react";
-import { SongProps } from "./Playlist";
+
 
 //import kiểu dữ liệu bài hát SongProps từ Playlist.tsx để truyền vô MusicPlayer
+export type SongProps = {
+    title: string;
+    artist: string;
+    albumArt: string;
+    audioSrc: string;
+};
 type Props = {
     song: SongProps;
 }
@@ -12,8 +18,8 @@ export default function MusicPlayer({ song }: Props) {
     // 🔧 Khai báo kiểu rõ ràng cho ref
     const audioRef = useRef<HTMLAudioElement | null>(null); //trỏ tới thẻ <audio>, dùng để play/pause, lấy duration, currentTime, volume
     const [isPlaying, setIsPlaying] = useState(false);      //trạng thái nhạc đang chạy hay tạm dừng.
-    const [progress, setProgress] = useState(0);            //trạng thái tiến trình bài hát, 0 => 100
-    const [volume, setVolume] = useState(100);              //trạng thái âm lượng, 0 => 100
+    const [progress, setProgress] = useState(0);            //trạng thái tiến trình bài hát (0=>100%)
+    const [volume, setVolume] = useState(100);              //trạng thái âm lượng (0=>100%)
     const [isShuffle, setIsShuffle] = useState(false);      // trạng thái Shuffle, khi true thì sẽ trộn bài ngẫu nhiên 
     const [repeatMode, setRepeatMode] = useState<0 | 1 | 2>(0);     // chế độ lặp lại. 0: none, 1: all, 2: one
 
@@ -21,7 +27,6 @@ export default function MusicPlayer({ song }: Props) {
     const togglePlay = () => {
         const audio = audioRef.current;
         if (!audio) return; //nếu ko có audio thì thoát hàm
-
         if (isPlaying) {
             audio.pause(); //nếu đang phát thì dừng
         } else {
@@ -50,18 +55,21 @@ export default function MusicPlayer({ song }: Props) {
     const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newVolume = Number(e.target.value);
         setVolume(newVolume);
-
         const audio = audioRef.current;
         if (audio) {
             audio.volume = newVolume / 100;
         }
     };
 
+    // dùng cho nút lặp lại bài hát, có 3 chế độ lặp lại: 0: none, 1: all, 2: one
+    const cycleRepeatMode = () => {
+        setRepeatMode(prev => (prev + 1) % 3 as 0 | 1 | 2);
+    };
+
     // handleEnded: xử lý khi kết thúc bài hát
     const handleEnded = () => {
         const audio = audioRef.current;
         if (!audio) return; //nếu ko có audio thì thoát
-
         //kiểm tra các chế độ lặp lại
         if (repeatMode === 2) {     // lặp lại 1 bài hát liên tục
             audio.currentTime = 0;  //đặt lại thời gian bài hát về đầu bài
@@ -69,16 +77,24 @@ export default function MusicPlayer({ song }: Props) {
         } 
         else if (repeatMode === 1) {  //lặp lại tất cả bài hát khi có ds bài hát
             audio.currentTime = 0;
-            audio.play(); 
+            audio.play();
         } 
         else { // No Repeat
             setIsPlaying(false);
         }
     };
-    // dùng cho nút lặp lại bài hát
-    const cycleRepeatMode = () => {
-        setRepeatMode(prev => (prev + 1) % 3 as 0 | 1 | 2);
-    };
+    
+
+    //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (audio && song.audioSrc) {
+            audio.load();
+            audio.play().catch(err => console.warn("Autoplay blocked", err));
+            setIsPlaying(true);
+            setProgress(0); // reset thanh tiến trình
+        }
+    }, [song.audioSrc]);
 
     return (
         <div className="fixed bottom-0 left-0 w-full h-[80px] bg-zinc-900 text-white flex items-center justify-between px-6 shadow-xl z-50">
