@@ -24,3 +24,18 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Thanh resize */
+.resize-handle {
+  width: 2px;
+  background-color: #4a4a4a;
+  cursor: ew-resize;
+}
+.cursor-ew-resize {
+  cursor: ew-resize;  /* Con trỏ thay đổi khi kéo */
+  cursor: pointer;
+}
+
+.bg-gray-500 {
+  background-color: #a1a1a1; /* Màu cho thanh kéo */
+}
