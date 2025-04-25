@@ -38,7 +38,7 @@ export default function MusicPlayer({ song }: Props) {
     // Cập nhật thanh tiến trình trên thời gian thực
     const handleTimeUpdate = () => {
         const audio = audioRef.current;
-        if (!audio) return;//nếu ko có audio thì thoát
+        if (!audio || isNaN(audio.duration) || audio.duration === 0) return;//nếu ko có audio thì thoát
         setProgress((audio.currentTime / audio.duration) * 100);
     };
 
