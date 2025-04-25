@@ -1,0 +1,20 @@
+[
+    {
+        "title": "Blank Space",
+        "artist": "Taylor Swift",
+        "albumArt": "/covers/Blank Space.jpg",
+        "audioSrc": "/songs/Blank Space.mp3"
+    },
+    {
+        "title": "Shake It Off",
+        "artist": "Taylor Swift",
+        "albumArt": "/covers/Shake It Off.jpg",
+        "audioSrc": "/songs/Shake It Off.mp3"
+    },
+    {   
+        "title": "One Last Kiss",
+        "artist": "Utada Hikaru",
+        "albumArt": "/covers/One Last Kiss.jpg",
+        "audioSrc": "/songs/One Last Kiss.mp3"
+    }
+]
