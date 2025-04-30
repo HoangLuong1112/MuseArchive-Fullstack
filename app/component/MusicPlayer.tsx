@@ -96,6 +96,7 @@ export default function MusicPlayer({ song }: Props) {
         }
     }, [song.audioSrc]);
     // 28/4/2025
+    // 30/4/2025
     return (
         <div className="fixed bottom-0 left-0 w-full h-[80px] bg-zinc-900 text-white flex items-center justify-between px-6 shadow-xl z-50">
             
