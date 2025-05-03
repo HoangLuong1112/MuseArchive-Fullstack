@@ -45,5 +45,5 @@ export default function Playlist({ onSelect }: Props) {
                 </div>
             ))}
         </div>
-  );
+    );
 }

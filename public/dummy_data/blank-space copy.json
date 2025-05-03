@@ -1,7 +1,10 @@
 {
+    "id": "blank-space",
     "name": "Blank Space",
-    "albumArt": "/covers/Blank Space.jpg",
-    "audioSrc": "/songs/Blank Space.mp3",
+    "musician": "Taylor Swift",
+    "audio": "/songs/Blank Space.mp3",
+    "cover": "/covers/Blank Space.jpg",
+    "duration": 231,
     "artist": "Taylor Swift",
     "contributor": [
         {
