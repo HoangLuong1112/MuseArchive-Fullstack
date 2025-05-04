@@ -83,7 +83,7 @@ export default function MusicPlayer({ song }: Props) {
             setIsPlaying(false);
         }
     };
-    
+    //testings
 
     //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
     useEffect(() => {
