@@ -1,14 +1,19 @@
 
 ## 1. Chạy Virtual Environment (venv)
-kích hoạt môi trường ảo:
+tạo môi trường ảo:
 
-### Windows:
+```bash
+python -m venv venv 
+```
+
+chạy môi trường ảo
 ```bash
 venv\Scripts\activate
 ```
 
-## 2.Tạo env
+## 2.Tạo .env
 copy file ```.env.example``` thành ```.env```
+
 ### Windows:
 ```bash
 copy .env.example .env
@@ -19,8 +24,18 @@ cp .env.example .env
 ```
 rồi config lại file env
 
-## 2.Run Server 
+
+## 3.Install các package trong file Requirement.txt
+```bash
+pip install -r requirements.txt
+```
+## 4.Run Server
 
 ```bash
 python manage.py runserver
+```
+
+## Lưu ý nếu không có quyền admin thì chạy 
+```bash
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
