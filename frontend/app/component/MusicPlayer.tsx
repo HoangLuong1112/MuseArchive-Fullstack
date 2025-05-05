@@ -38,7 +38,7 @@ export default function MusicPlayer({ song }: Props) {
     // Cập nhật thanh tiến trình trên thời gian thực
     const handleTimeUpdate = () => {
         const audio = audioRef.current;
-        if (!audio) return;//nếu ko có audio thì thoát
+        if (!audio || isNaN(audio.duration) || audio.duration === 0) return;//nếu ko có audio thì thoát
         setProgress((audio.currentTime / audio.duration) * 100);
     };
 
@@ -83,7 +83,7 @@ export default function MusicPlayer({ song }: Props) {
             setIsPlaying(false);
         }
     };
-    
+    //testings
 
     //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
     useEffect(() => {
@@ -95,12 +95,12 @@ export default function MusicPlayer({ song }: Props) {
             setProgress(0); // reset thanh tiến trình
         }
     }, [song.audioSrc]);
-
+    
     return (
         <div className="fixed bottom-0 left-0 w-full h-[80px] bg-zinc-900 text-white flex items-center justify-between px-6 shadow-xl z-50">
             
             {/* Left: Song Info */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-50">
                 <img src={song.albumArt} alt="Album Art" className="w-12 h-12 rounded-md object-cover" />
                 <div>
                     <h4 className="text-sm font-semibold">{song.title}</h4>

@@ -1,0 +1,11 @@
+{ 
+    "name": "Taylor Swift",
+    "followers": 1000000,
+    "introduce": "Taylor Swift is an American singer-songwriter known for her narrative songwriting and genre-spanning discography.",
+    "social_media": {
+        "instagram": "https://www.instagram.com/taylorswift/",
+        "twitter": "https://twitter.com/taylorswift13",
+        "facebook": "https://www.facebook.com/TaylorSwift/",
+        "youtube": "https://www.youtube.com/user/taylorswift"
+    }
+}

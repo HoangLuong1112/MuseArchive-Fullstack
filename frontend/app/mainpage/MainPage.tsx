@@ -4,6 +4,7 @@ import MusicPlayer from '../component/MusicPlayer';
 import NavBar from './NavBar';
 import Playlist, { SongProps } from '../component/Playlist';
 import Sidebar from '../component/Sidebar';
+import AlbumList from '../component/AlbumList';
 
 const MainPage = () => {
     const [currentSong, setCurrentSong] = useState<SongProps | null>(null);
@@ -54,10 +55,14 @@ const MainPage = () => {
                     <h2>Main Content</h2>
                     <p>Welcome to the main page of the Muse Archive!</p>
                     <Playlist onSelect={setCurrentSong} />
+
+                    <AlbumList />
                 </div>
             </div>
 
             {currentSong && <MusicPlayer song={currentSong} />}
+
+            
         </div>
     );
 };

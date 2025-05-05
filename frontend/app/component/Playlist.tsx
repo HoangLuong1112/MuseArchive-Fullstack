@@ -10,6 +10,12 @@ export type SongProps = {
     audioSrc: string;
 };
 
+export type Album = {
+    name: string;
+    musician: string;
+    songslist: SongProps[];
+}
+
 // tạo kiểu Props cho props của component Playlist
 //      onSelect là một callback function, gọi tới thì phải truyền vào một object kiểu SongProps, hàm này không cần return.
 //      (song: SongProps) => void: Tham số song kiểu SongProps, Không trả về gì (void)
@@ -27,8 +33,8 @@ export default function Playlist({ onSelect }: Props) {
     }, []);
 
     return (
-        <div className="p-4 space-y-2">
-        <h2 className="text-lg font-bold mb-2">Playlist</h2>
+        <div className="">
+            <h2 className="text-lg font-bold mb-2">Playlist</h2>
             {songs.map((song, index) => (
                 <div key={index} className="p-2 flex items-center gap-4 bg-zinc-800 rounded-md hover:bg-zinc-700 cursor-pointer" onClick={() => onSelect(song)}>
                     <img src={song.albumArt} alt={song.title} className="w-12 h-12 object-cover rounded" />
@@ -39,5 +45,5 @@ export default function Playlist({ onSelect }: Props) {
                 </div>
             ))}
         </div>
-  );
+    );
 }
