@@ -1,6 +1,7 @@
 'use client';
 import { useRef, useState, useEffect } from "react";
 import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1,  Volume2 } from "lucide-react";
+import { usePlayer } from "../context/PlayerContext";
 
 
 //import kiểu dữ liệu bài hát SongProps từ Playlist.tsx để truyền vô MusicPlayer
@@ -10,12 +11,18 @@ export type SongProps = {
     albumArt: string;
     audioSrc: string;
 };
-type Props = {
-    song: SongProps;
-}
+// type Props = {
+//     song: SongProps;
+// }
 
-export default function MusicPlayer({ song }: Props) {
-    // 🔧 Khai báo kiểu rõ ràng cho ref
+export default function MusicPlayer() {
+    /* Trước đây MusicPlayer nhận prop song trực tiếp từ Props, nên khi 
+    chuyển qua xài Context để quản lý bài hát, bạn sẽ không truyền song nữa, 
+    mà sẽ lấy currentSong từ usePlayer(). 
+    Trong app chỉ có một nơi quản lý bài hát đang phát – đó là PlayerContext. */
+    const {currentSong: song} = usePlayer(); // ==> Lấy bài hát đang phát
+    
+    // Khai báo kiểu rõ ràng cho ref
     const audioRef = useRef<HTMLAudioElement | null>(null); //trỏ tới thẻ <audio>, dùng để play/pause, lấy duration, currentTime, volume
     const [isPlaying, setIsPlaying] = useState(false);      //trạng thái nhạc đang chạy hay tạm dừng.
     const [progress, setProgress] = useState(0);            //trạng thái tiến trình bài hát (0=>100%)
@@ -83,18 +90,21 @@ export default function MusicPlayer({ song }: Props) {
             setIsPlaying(false);
         }
     };
-    //testings
-
+    
     //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
     useEffect(() => {
         const audio = audioRef.current;
-        if (audio && song.audioSrc) {
+        if (audio && song?.audioSrc) {
             audio.load();
             audio.play().catch(err => console.warn("Autoplay blocked", err));
             setIsPlaying(true);
             setProgress(0); // reset thanh tiến trình
         }
-    }, [song.audioSrc]);
+    }, [song?.audioSrc]);
+
+    // chưa có bài nào được chọn thì không render player
+    if (!song) return null;
+
     
     return (
         <div className="fixed bottom-0 left-0 w-full h-[80px] bg-zinc-900 text-white flex items-center justify-between px-6 shadow-xl z-50">
