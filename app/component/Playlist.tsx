@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { usePlayer } from "../context/PlayerContext";
+import Image from "next/image";
 
 //kiểu dữ liệu cho 1 bài hát mà json phải trả về
 //  export để cho file khác có thể import kiểu SongProps
@@ -36,7 +37,7 @@ export default function Playlist() {
                     {/* Khi người dùng click vào 1 bài hát:
                     setCurrentSong(song) được gọi → context (hàm lưu trữ chung, coi PlayerContext để biết thêm) cập nhật → tất cả component đang dùng currentSong (AppWrapper đã bọc hết rồi) sẽ re-render.*/}
 
-                    <img src={song.albumArt} alt={song.title} className="w-12 h-12 object-cover rounded" />
+                    <Image src={song.albumArt} alt={song.title} width={48} height={48} className=" object-cover rounded" />
                     <div>
                         <p className="text-white font-medium">{song.title}</p>
                         <p className="text-zinc-400 text-sm">{song.artist}</p>

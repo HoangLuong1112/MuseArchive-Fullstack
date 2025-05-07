@@ -2,6 +2,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1,  Volume2 } from "lucide-react";
 import { usePlayer } from "../context/PlayerContext";
+import Image from "next/image";
 
 
 //import kiểu dữ liệu bài hát SongProps từ Playlist.tsx để truyền vô MusicPlayer
@@ -111,7 +112,7 @@ export default function MusicPlayer() {
             
             {/* Left: Song Info */}
             <div className="flex items-center gap-4 w-50">
-                <img src={song.albumArt} alt="Album Art" className="w-12 h-12 rounded-md object-cover" />
+                <Image src={song.albumArt} alt="Album Art" width={48} height={48} className="rounded-md object-cover" />
                 <div>
                     <h4 className="text-sm font-semibold">{song.title}</h4>
                     <p className="text-xs text-zinc-400">{song.artist}</p>

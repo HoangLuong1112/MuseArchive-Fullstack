@@ -1,6 +1,6 @@
 'use client';
 import { Library, Music, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
 const MIN_WIDTH = 60;
 const MAX_WIDTH = 300;

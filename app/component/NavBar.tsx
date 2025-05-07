@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react'
 import { Home, Search, Bell, ChevronDown } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
 
 const NavBar: React.FC = () => {
     const [showMenu, setShowMenu] = useState(false)
@@ -10,20 +12,26 @@ const NavBar: React.FC = () => {
         <div className="w-full h-16 px-6 flex items-center justify-between bg-neutral-900 text-white shadow-sm relative">
             {/* Left: Spotify logo */}
             <div className="flex items-center gap-2">
-                <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/7/78/Spotify_2.png"
-                    alt="Spotify Logo"
-                    className="h-8"
-                />
-
+                <Link href={"/"}>
+                    <Image
+                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Spotify_2.png"
+                        alt="Spotify Logo"
+                        width={32}
+                        height={32}
+                        className=""
+                    />
+                </Link>
             </div>
 
             {/* Center: Home + Search */}
             <div className="flex items-center gap-6 w-1/2 justify-center">
-                <button className="flex items-center gap-2 text-sm font-medium hover:text-green-400 transition">
-                    <Home size={20} />
-                    <span>Trang chủ</span>
-                </button>
+                <Link href={"/"}>
+                    <button className="flex items-center gap-2 text-sm font-medium hover:text-green-400 transition cursor-pointer">
+                        <Home size={20} />
+                        <span>Trang chủ</span>
+                    </button>
+                </Link>
+                
 
                 <div className="flex items-center bg-neutral-800 px-3 py-1.5 rounded-full w-full max-w-md hover:bg-neutral-700 transition">
                     <Search size={18} className="text-gray-400" />
