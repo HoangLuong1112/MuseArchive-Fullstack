@@ -28,6 +28,9 @@ const playlists = [
 ] */
 export async function GET() {
     //Dùng dấu gạch dưới _songs để báo ESLint biết là cố tình bỏ qua
-    return NextResponse.json(playlists.map(({ songs: _songs, ...rest }) => rest)) // chỉ gửi thông tin tổng quát
+    // return NextResponse.json(playlists.map(({ songs: _songs, ...rest }) => rest)) // chỉ gửi thông tin tổng quát
+    return NextResponse.json(
+        playlists.map(p => ({ id: p.id, name: p.name }))
+    );
 }
   
