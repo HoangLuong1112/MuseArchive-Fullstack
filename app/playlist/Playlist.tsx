@@ -2,22 +2,10 @@
 import { useEffect, useState } from "react";
 import { usePlayer } from "../context/PlayerContext";
 import Image from "next/image";
+import { SongProps } from "@/types/song";
 
 //kiểu dữ liệu cho 1 bài hát mà json phải trả về
 //  export để cho file khác có thể import kiểu SongProps
-export type SongProps = {
-    title: string;
-    artist: string;
-    albumArt: string;
-    audioSrc: string;
-};
-
-export type Album = {
-    name: string;
-    musician: string;
-    songslist: SongProps[];
-}
-
 export default function Playlist() {
     const [songs, setSongs] = useState<SongProps[]>([]);
     const { setCurrentSong } = usePlayer(); // 👈 Lấy hàm setCurrentSong từ context

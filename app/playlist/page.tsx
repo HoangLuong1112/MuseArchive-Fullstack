@@ -1,7 +1,10 @@
 'use client'
 
+import { Playlist } from '@/types/song'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import PlaylistCard from '../component/PlaylistCard'
 /*      /playlist:
 - gọi API /api/playlists
 - render danh sách playlist
@@ -10,38 +13,35 @@ import { useEffect, useState } from 'react'
 - gọi /api/playlists/:id
 - render danh sách bài hát trong playlist */
 
-//TRANG DANH SÁCH PLAYLIST
-
-
-interface Playlist {
-  id: string
-  name: string
-}
-
 export default function PlaylistPage() {
-  const [playlists, setPlaylists] = useState<Playlist[]>([])
+	const [playlists, setPlaylists] = useState<Playlist[]>([])
 
-    /*  Sử dụng React hook useEffect để gọi API khi trang được render lần đầu.
-        Lưu kết quả vào playlists bằng setPlaylists */
-  useEffect(() => {
-    fetch('/api/playlists')
-      .then(res => res.json())
-      .then(data => setPlaylists(data))
-  }, [])
+		/*  Sử dụng React hook useEffect để gọi API khi trang được render lần đầu.
+			Lưu kết quả vào playlists bằng setPlaylists */
+	useEffect(() => {
+		fetch('/api/playlists')
+		.then(res => res.json())
+		.then(data => setPlaylists(data))
+	}, [])
 
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Playlist</h1>
-      <ul className="mt-4 space-y-2">
-        {playlists.map(pl => (
-            // Duyệt playlists để hiển thị từng playlist là một <Link> chuyển trang đến /playlist/[id]
-          <li key={pl.id}>
-            <Link href={`/playlist/${pl.id}`} className="text-blue-600 hover:underline">
-              🎧 {pl.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
+	// alert(playlists);
+
+	return (
+		<div className="">
+			<h1 className="text-2xl font-bold">Các Playlist hiện tại</h1>
+			<div className="flex gap-10 ">
+				{/* Duyệt playlists để hiển thị từng playlist là một <Link> chuyển trang đến /playlist/[id] */}
+				{playlists.map( (pl, index) => (
+					<div key={index} className=''>
+						{/* <Link href={`/playlist/${pl.playlistName}`} className="text-blue-600 hover:underline">
+						{pl.playlistName}
+						</Link>
+						{pl.description}
+						<Image src={pl.coverUrl} alt={pl.playlistName} width={20} height={20} /> */}
+						<PlaylistCard playlistName={pl.playlistName} coverUrl={pl.coverUrl} description={pl.description} />
+					</div>
+				))}
+			</div>
+		</div>
+ 	)
 }

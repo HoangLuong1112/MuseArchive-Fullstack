@@ -1,4 +1,5 @@
 'use client';
+import { SongProps } from '@/types/song';
 import { createContext, useContext, useState } from 'react';
 // createContext → Dùng để tạo ra một "kho lưu trữ chia sẻ".
 // useContext → Dùng để lấy dữ liệu từ context đã tạo.
@@ -35,18 +36,9 @@ import { createContext, useContext, useState } from 'react';
 
 */
 
-
-//kiểu dữ liệu bài hát
-export type SongProps = {
-    title: string;
-    artist: string;
-    albumArt: string;
-    audioSrc: string;
-};
-
 //định nghĩa Context type
 type PlayerContextType = {
-    currentSong: SongProps | null; //bài hát hiện đang hát
+    currentSong: SongProps | null; //bài hát hiện đang hát (kiểu dữ liệu được import)
     setCurrentSong: (song: SongProps) => void; //hàm để đổi bài hát khác
 };
 

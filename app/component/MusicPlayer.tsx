@@ -4,21 +4,9 @@ import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1,  Volume2 
 import { usePlayer } from "../context/PlayerContext";
 import Image from "next/image";
 
-
-//import kiểu dữ liệu bài hát SongProps từ Playlist.tsx để truyền vô MusicPlayer
-export type SongProps = {
-    title: string;
-    artist: string;
-    albumArt: string;
-    audioSrc: string;
-};
-// type Props = {
-//     song: SongProps;
-// }
-
 export default function MusicPlayer() {
     /* Trước đây MusicPlayer nhận prop song trực tiếp từ Props, nên khi 
-    chuyển qua xài Context để quản lý bài hát, bạn sẽ không truyền song nữa, 
+    chuyển qua xài Context để quản lý bài hát, bạn sẽ không truyền song hay type của song nữa nữa, 
     mà sẽ lấy currentSong từ usePlayer(). 
     Trong app chỉ có một nơi quản lý bài hát đang phát – đó là PlayerContext. */
     const {currentSong: song} = usePlayer(); // ==> Lấy bài hát đang phát

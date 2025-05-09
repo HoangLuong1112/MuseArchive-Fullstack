@@ -1,17 +1,18 @@
 'use client'
 import Link from "next/link";
-import Playlist from "./component/Playlist";
+import PlaylistPage from "./playlist/page";
+// import Playlist from "./component/Playlist";
 
 export default function Home() {
 	return (
 		<div>
-			<div className="">
+			{/* <div className="">
 				HomePage <br/>
-				<Link href={"/mainpage"} className="font-bold text-5xl">MainPage</Link><br />
-				<Link href={"/settingpage"} className="font-bold text-5xl">Setting</Link><br/>
-				<Link href={"/playlist"} className="font-bold text-5xl">Playlist</Link><br/>
+				<p>Wellcome Summonner</p>
+				<Link href={"/playlist"} className="font-bold text-5xl">Playlist Testing</Link><br/>
 				<Playlist />
-			</div>
+			</div> */}
+			<PlaylistPage />
 		</div>
 	);
 }
