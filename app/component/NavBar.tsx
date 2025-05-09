@@ -9,7 +9,7 @@ const NavBar: React.FC = () => {
     const [showMenu, setShowMenu] = useState(false)
 
     return (
-        <div className="w-full h-16 px-6 flex items-center justify-between bg-neutral-900 text-white shadow-sm relative">
+        <div className="w-full h-16 px-6 flex items-center justify-between bg-black text-white shadow-sm relative py-4">
             {/* Left: Spotify logo */}
             <div className="flex items-center gap-2">
                 <Link href={"/"}>
@@ -31,7 +31,7 @@ const NavBar: React.FC = () => {
                         <span>Trang chủ</span>
                     </button>
                 </Link>
-                
+
 
                 <div className="flex items-center bg-neutral-800 px-3 py-1.5 rounded-full w-full max-w-md hover:bg-neutral-700 transition">
                     <Search size={18} className="text-gray-400" />
@@ -69,9 +69,11 @@ const NavBar: React.FC = () => {
                             <button className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-700">
                                 Cài đặt
                             </button>
-                            <button className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-700 text-red-400">
-                                Đăng xuất
-                            </button>
+                            <Link href={"/loginpage"}>
+                                <button className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-700 text-red-400">
+                                    Đăng xuất
+                                </button>
+                            </Link>
                         </div>
                     )}
                 </div>

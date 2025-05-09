@@ -27,15 +27,29 @@ body {
 
 /* Thanh resize */
 .resize-handle {
-  width: 2px;
-  background-color: #4a4a4a;
+  width: 3px;
   cursor: ew-resize;
+  margin: 2px 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.resize-handle:hover{
+  background-color: #606060;
 }
 .cursor-ew-resize {
   cursor: ew-resize;  /* Con trỏ thay đổi khi kéo */
-  cursor: pointer;
 }
 
 .bg-gray-500 {
   background-color: #a1a1a1; /* Màu cho thanh kéo */
+}
+
+.song-child {
+  background-color: #1b1b1b;
+
+}
+
+.song-child:hover {
+  background-color: #232323;
 }
