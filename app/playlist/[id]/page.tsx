@@ -35,7 +35,6 @@ export default function PlaylistDetail() {
 						<p className="text-white font-medium">{song.title}</p>
 						<p className="text-zinc-400 text-sm">{song.artist}</p>
 					</div>
-
 				</div>
 			))}
 		</div>

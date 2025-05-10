@@ -68,8 +68,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
 
 /*  Custom hook để dùng context
 - usePlayer là customhook, nếu bạn quên bọc PlayerProvider, nó sẽ báo lỗi rõ ràng.
-- Bạn chỉ cần:
-    const { currentSong, setCurrentSong } = usePlayer(); */
+- Bạn chỉ cần: const { currentSong, setCurrentSong } = usePlayer(); */
 export const usePlayer = () => {
     const context = useContext(PlayerContext);
     if (!context) throw new Error("usePlayer must be used within a PlayerProvider");
