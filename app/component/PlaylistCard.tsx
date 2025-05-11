@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function PlaylistCard( props : Playlist ) {
     return (
         <Link href={`/playlist/${props.playlistName}`}>
-            <div className="bg-amber-300 p-2">
+            <div className="bg-amber-300 p-2 rounded-2xl">
                 <Image src={props.coverUrl} alt={props.playlistName} width={200} height={200} />
                 <div>{props.description}</div>
             </div>

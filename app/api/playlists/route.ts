@@ -15,6 +15,26 @@ const playlists = [
         coverUrl: '/covers/Shake It Off.jpg',
         description: 'test playlist 2',
     },
+    {
+        playlistName: 'Pistisch2',
+        coverUrl: '/covers/Shake It Off.jpg',
+        description: 'test playlist 2',
+    },
+    // {
+    //     playlistName: 'Pistisch3',
+    //     coverUrl: '/covers/Shake It Off.jpg',
+    //     description: 'test playlist 2',
+    // },
+    // {
+    //     playlistName: 'Pistisch4',
+    //     coverUrl: '/covers/Shake It Off.jpg',
+    //     description: 'test playlist 2',
+    // },
+    // {
+    //     playlistName: 'Pistisch5',
+    //     coverUrl: '/covers/Shake It Off.jpg',
+    //     description: 'test playlist 2',
+    // },
 ]
 
 export async function GET() {
