@@ -6,7 +6,7 @@ export default function PlaylistCard( props : Playlist ) {
     return (
         <Link href={`/playlist/${props.playlistName}`}>
             <div className="bg-amber-300 p-2">
-                <Image src={props.coverUrl} alt={props.playlistName} width={120} height={120} />
+                <Image src={props.coverUrl} alt={props.playlistName} width={200} height={200} />
                 <div>{props.description}</div>
             </div>
         </Link>

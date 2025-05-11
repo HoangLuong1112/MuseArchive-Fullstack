@@ -37,11 +37,11 @@ const Sidebar = () => {
     };
 
   return (
-    <>
+    <div>
       <div
         ref={sidebarRef}
         style={{ width: `${sidebarWidth}px`, transition: 'width 0.2s' }}
-        className="bg-black text-white h-full p-4 flex flex-col justify-between relative"
+        className="bg-zinc-900 text-white h-full p-4 flex flex-col justify-between relative rounded-2xl"
       >
         {/* Collapse toggle */}
         <button
@@ -83,7 +83,7 @@ const Sidebar = () => {
         onMouseDown={startResizing}
         className="w-1 bg-gray-600 cursor-ew-resize"
       />
-    </>
+    </div>
   );
 };
 

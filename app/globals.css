@@ -44,12 +44,3 @@ body {
 .bg-gray-500 {
   background-color: #a1a1a1; /* Màu cho thanh kéo */
 }
-
-.song-child {
-  background-color: #1b1b1b;
-
-}
-
-.song-child:hover {
-  background-color: #232323;
-}

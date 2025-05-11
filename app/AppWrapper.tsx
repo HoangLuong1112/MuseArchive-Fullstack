@@ -8,6 +8,10 @@ import { usePathname } from "next/navigation";
 
 // Đây là component dùng để gói toàn bộ giao diện lại, đóng vai trò như 1 phần mở rộng của app/layout.tsx
 // Nơi bọc toàn bộ ứng dụng trong <PlayerProvider> – đây là cái trực tiếp kích hoạt cơ chế Context hoạt động.
+
+{/* Tạo thanh cuộn bằng overflow
+    flex flex-1 min-h-0: nếu không có min-h-0, phần overflow-y-auto sẽ không cuộn được do Flexbox không biết giới hạn chiều cao của phần tử con.
+    overflow-y-auto: Cho phép scroll trong phần children. */}
 export default function AppWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname(); // Lấy đường dẫn hiện tại
 
@@ -16,14 +20,12 @@ export default function AppWrapper({ children }: { children: React.ReactNode }) 
     return (
         // bọc trong PlayerProvider để có thể chạy bài hát ở bất kỳ chỗ nào trên trang bằng cách gọi
         <PlayerProvider>
-            {/* Tạo thanh cuộn bằng overflow
-            flex flex-1 min-h-0: nếu không có min-h-0, phần overflow-y-auto sẽ không cuộn được do Flexbox không biết giới hạn chiều cao của phần tử con.
-            overflow-y-auto: Cho phép scroll trong phần children. */}
-            <div className="h-screen w-full flex flex-col">
+            <div className="h-screen w-full flex flex-col bg-black">
                 {!isLoginPage && !isSignUpPage  && <NavBar />}
-                <div className="flex flex-1 min-h-0">
+                <div className="flex flex-1 min-h-0 gap-5 mx-5">
                     {!isLoginPage && !isSignUpPage && <Sidebar />}
-                    <div className={`flex-1 min-h-0 overflow-y-auto ${!isLoginPage && !isSignUpPage ? 'p-4' : ''}`}>
+                    <div className={`flex-1 min-h-0 overflow-y-auto 
+                        ${!isLoginPage && !isSignUpPage ? 'bg-zinc-900 text-white rounded-2xl px-5 pt-5 pb-56' : ''}`}>
                         {children}
                     </div>
                 </div>
