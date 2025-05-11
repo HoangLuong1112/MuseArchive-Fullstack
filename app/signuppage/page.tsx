@@ -42,14 +42,14 @@ export default function SignUpPage() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-[#191414]">
             <div className="w-full max-w-lg p-8 bg-black rounded-lg shadow-lg">
-                <h2 className="text-3xl font-bold text-white text-center mb-6">Ğăng ký tài khoản</h2>
+                <h2 className="text-3xl font-bold text-white text-center mb-6">Đăng ký tài khoản</h2>
 
                 {error && <p className="text-red-500 text-center mb-4">{error}</p>}
                 {success && <p className="text-green-500 text-center mb-4">{success}</p>}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="text-white block">User name</label>
+                        <label className="text-white block">Tên người dùng</label>
                         <input
                             name="username"
                             type="text"
@@ -75,7 +75,7 @@ export default function SignUpPage() {
                     </div>
 
                     <div>
-                        <label className="text-white block"></label>
+                        <label className="text-white block">Mật khẩu</label>
                         <input
                             name="password"
                             type="password"
@@ -134,9 +134,9 @@ export default function SignUpPage() {
 
                     <div className="mt-4 text-center text-white">
                         <p>
-                            Ğã có tài khoản?{' '}
+                            Đã có tài khoản?{' '}
                             <a href="/loginpage" className="text-[#1DB954] hover:underline">
-                                Ğăng nhập ngay
+                                Đăng nhập ngay
                             </a>
                         </p>
                     </div>
