@@ -29,7 +29,8 @@ export default function PlaylistDetail() {
 			{playlist.description}
 			{playlist.songList?.map((song, index) => (
 				<div key={index} className="p-2 flex items-center gap-4 bg-zinc-800 rounded-md hover:bg-zinc-700 cursor-pointer" 
-					onClick={() => setCurrentSong(song)}>
+					onClick={() => setCurrentSong(song, playlist.songList)}>
+					{/* song là bài hát đc chọn, truyền thêm songlist để coi vị trí của song, khi hết bài thì chuyển bài tiếp theo */}
 					<Image src={song.albumArt} alt={song.title} width={48} height={48} className=" object-cover rounded" />
 					<div>
 						<p className="text-white font-medium">{song.title}</p>

@@ -9,7 +9,7 @@ export default function MusicPlayer() {
     chuyển qua xài Context để quản lý bài hát, bạn sẽ không truyền song hay type của song nữa nữa, 
     mà sẽ lấy currentSong từ usePlayer(). 
     Trong app chỉ có một nơi quản lý bài hát đang phát – đó là PlayerContext. */
-    const {currentSong: song} = usePlayer(); // ==> Lấy bài hát đang phát
+    const {currentSong: song, playNext, playPrev } = usePlayer(); // ==> Lấy bài hát đang phát
     
     // Khai báo kiểu rõ ràng cho ref
     const audioRef = useRef<HTMLAudioElement | null>(null); //trỏ tới thẻ <audio>, dùng để play/pause, lấy duration, currentTime, volume
@@ -65,20 +65,26 @@ export default function MusicPlayer() {
     // handleEnded: xử lý khi kết thúc bài hát
     const handleEnded = () => {
         const audio = audioRef.current;
-        if (!audio) return; //nếu ko có audio thì thoát
-        //kiểm tra các chế độ lặp lại
-        if (repeatMode === 2) {     // lặp lại 1 bài hát liên tục
-            audio.currentTime = 0;  //đặt lại thời gian bài hát về đầu bài
-            audio.play();           //rồi phát bài hát
+        if (!audio) return;
+        
+        //Check các chế độ lặp lại
+            //Mode 2: lặp lại 1 bài hát liên tục
+        if (repeatMode === 2) {         
+            //đặt lại tiến độ bài hát về đầu bài rồi chạy bài           
+            audio.currentTime = 0;      
+            audio.play();    
+            return;           
         } 
-        else if (repeatMode === 1) {  //lặp lại tất cả bài hát khi có ds bài hát
-            audio.currentTime = 0;
-            audio.play();
-        } 
-        else { // No Repeat
-            setIsPlaying(false);
-        }
+        // 2 Mode còn lại xử lý bên PlayerContext cho dễ
+        playNext(repeatMode, isShuffle);
     };
+
+    const handleNext = () =>{
+        playNext();
+    }
+    const handlePrev = () => {
+        playPrev();
+    }
     
     //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
     useEffect(() => {
@@ -90,6 +96,12 @@ export default function MusicPlayer() {
             setProgress(0); // reset thanh tiến trình
         }
     }, [song?.audioSrc]);
+
+    //khi shuffle thì ko có lặp bài
+    useEffect(() => {
+        if(isShuffle)
+            setRepeatMode(0);
+    }, [isShuffle])
 
     // chưa có bài nào được chọn thì không render player
     if (!song) return null;
@@ -113,16 +125,16 @@ export default function MusicPlayer() {
                     <button onClick={() => setIsShuffle(!isShuffle)} className={isShuffle ? "text-green-500" : "hover:text-white text-gray-400"}>
                         <Shuffle size={20} />
                     </button>
-                    <button className="hover:text-white text-gray-400 cursor-pointer">
+                    <button className="hover:text-white text-gray-400 cursor-pointer" onClick={handlePrev}>
                         <SkipBack size={20} />
                     </button>
                     <button onClick={togglePlay} className="bg-white text-black p-1 rounded-full cursor-pointer">
                         {isPlaying ? <Pause size={20} /> : <Play size={20} />}
                     </button>
-                    <button className="hover:text-white text-gray-400 cursor-pointer">
+                    <button className="hover:text-white text-gray-400 cursor-pointer" onClick={handleNext}>
                         <SkipForward size={20} />
                     </button>
-                    <button onClick={cycleRepeatMode} className={repeatMode === 2 ? "text-green-500" : ""}>
+                    <button onClick={cycleRepeatMode} disabled={isShuffle} className={repeatMode === 2 ? "text-green-500" : ""}>
                         {repeatMode === 2 ? <Repeat1 size={20} /> : <Repeat size={20} className={repeatMode === 1 ? "text-green-500" : "text-gray-400 hover:text-white"} />}
                     </button>
                 </div>
