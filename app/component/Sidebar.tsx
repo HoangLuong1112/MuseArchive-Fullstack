@@ -1,6 +1,7 @@
 'use client';
 import { Library, Music, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState, useRef } from 'react';
+import Link from 'next/link';
 
 const MIN_WIDTH = 60;
 const MAX_WIDTH = 300;
@@ -56,8 +57,8 @@ const Sidebar = () => {
         <div>
           {/* Navigation */}
           <nav className="flex flex-col gap-4 mt-8">
-            <NavItem icon={Library} label="Your Library" collapsed={isCollapsed} />
-            <NavItem icon={Music} label="Create Playlist" collapsed={isCollapsed} />
+            <Link href=""><NavItem icon={Library} label="Your Library" collapsed={isCollapsed} /></Link>
+            <Link href="/createplaylistpage"><NavItem icon={Music} label="Create Playlist" collapsed={isCollapsed} /></Link>
             <NavItem icon={Heart} label="Liked Songs" collapsed={isCollapsed} />
           </nav>
         </div>

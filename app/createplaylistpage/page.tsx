@@ -1,5 +1,11 @@
-export default function CreatePlayListPage() {
-    return (
-        <div>Create Playlist Page</div>
-    );
+import CreatePlaylistHeader from './CreatepPlaylistHeader';
+import PlaylistSongList from './PlaylistSongList';
+
+export default function CreatePlaylistPage() {
+  return (
+    <div className="">
+      <CreatePlaylistHeader />
+      <PlaylistSongList />
+    </div>
+  );
 }
