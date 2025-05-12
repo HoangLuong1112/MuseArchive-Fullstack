@@ -1,10 +1,11 @@
 'use client';
 
 import { useState} from 'react';
-import { FaPlay, FaEllipsisH, FaHeart, FaRegHeart, FaCheck } from 'react-icons/fa';
+import { FaPlay, FaEllipsisH, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { IoMdTime } from 'react-icons/io';
-import { BsFillPeopleFill } from 'react-icons/bs';
 import Image from 'next/image';
+
+// file này chỉ để coi tham khảo, không xài code trong này
 
 interface Song {
     id: number;
@@ -73,12 +74,12 @@ export default function ArtistDetailPage() {
     const [artist, setArtist] = useState<Artist>(mockArtist);
     const [activeTab, setActiveTab] = useState<'popular' | 'albums'>('popular');
 
-    const toggleFollow = () => {
-        setArtist(prev => ({
-            ...prev,
-            isFollowing: !prev.isFollowing
-        }));
-    };
+    // const toggleFollow = () => {
+    //     setArtist(prev => ({
+    //         ...prev,
+    //         isFollowing: !prev.isFollowing
+    //     }));
+    // };
 
     const toggleLike = (songId: number) => {
         setArtist(prev => ({
@@ -105,15 +106,13 @@ export default function ArtistDetailPage() {
     return (
         <div className="text-white min-h-screen rounded-lg">
             {/* Header với ảnh cover */}
-            <div className="relative  rounded-lg">
-                <div
-                    className="h-64 w-full bg-gradient-to-b from-purple-900 to-black  rounded-lg"
+            {/* <div className="relative  rounded-lg">
+                <div className="h-64 w-full bg-gradient-to-b from-purple-900 to-black rounded-lg"
                     style={{
                         backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9)), url(${artist.coverImage})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center'
-                    }}
-                >
+                    }}>
                     <div className="absolute bottom-0 left-0 p-6 flex items-end gap-6">
                         <Image
                             src={artist.profileImage}
@@ -146,7 +145,7 @@ export default function ArtistDetailPage() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* Nội dung chính */}
             <div className="p-6 bg-gradient-to-b from-black-500 to-gray-900 px-8  rounded-lg">

@@ -3,13 +3,14 @@ export type SongProps = {
     artist: string;
     albumArt: string;
     audioSrc: string;
+    duration?: number;
 };
 
 export type Album = {
     albumName: string;
     coverUrl: string;
     musician?: string;
-    songslist?: SongProps[];
+    songList?: SongProps[];
 }
 
 export type Playlist ={
@@ -21,17 +22,20 @@ export type Playlist ={
 }
 
 export type SocialMedia = {
-    facebook: string;
-    insta: string;
-    youtube: string;   
+    faceLink: string;
+    instaLink: string;
+    youtubeLink: string;   
 }
 
 export type Musician = {
     musicianName: string;
-    coverUrl: string;
+    avatarPic: string;
+    coverPic?: string;
 	follower?: number;
-	introduce?: string;
+	about?: string;
 	socialMedia?: SocialMedia;
+    isVerified?: boolean;
+    isFollowing?: boolean;
 }
 
 export type Account = {

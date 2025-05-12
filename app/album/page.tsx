@@ -1,3 +1,4 @@
+'use client'
 import { Album } from '@/types/song'
 import { useEffect, useState } from 'react'
 import Carousel from '../component/Carousel'

@@ -1,18 +1,5 @@
 import { NextResponse } from "next/server"
-
-/*export type Album = {
-    albumName: string;
-    coverUrl: string;
-    musician: string;
-    songslist: SongProps[];
-} */
-const albums = [
-    {
-        albumName: 'Tên Album',
-        coverUrl: '/covers/Shake It Off.jpg',
-        musician: 'Tên nhạc sĩ',
-    }
-]
+import { albums } from "./data";
 
 export async function GET() {
     return NextResponse.json(

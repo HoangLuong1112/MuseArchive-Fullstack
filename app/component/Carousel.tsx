@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, ReactNode } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+// import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 //Carousel tổng quát
 interface CarouselProps<T> {
@@ -13,15 +13,15 @@ interface CarouselProps<T> {
 export default function Carousel<T>({ title, items, renderItem }: CarouselProps<T>) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    const scroll = (direction: 'left' | 'right') => {
-        if (scrollRef.current) {
-            const { scrollLeft, clientWidth } = scrollRef.current;
-            scrollRef.current.scrollTo({
-                left: direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth,
-                behavior: 'smooth',
-            });
-        }
-    };
+    // const scroll = (direction: 'left' | 'right') => {
+    //     if (scrollRef.current) {
+    //         const { scrollLeft, clientWidth } = scrollRef.current;
+    //         scrollRef.current.scrollTo({
+    //             left: direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth,
+    //             behavior: 'smooth',
+    //         });
+    //     }
+    // };
 
     return (
         <div className="space-y-4">

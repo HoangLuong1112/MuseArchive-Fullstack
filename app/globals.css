@@ -61,3 +61,6 @@ body {
 .card-subtitle {
   @apply text-[15px] text-gray-400 line-clamp-1;
 }
+.title {
+  @apply text-[70px] font-bold;
+}

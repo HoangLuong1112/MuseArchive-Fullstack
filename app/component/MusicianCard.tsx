@@ -4,10 +4,10 @@ import Link from "next/link";
 
 export default function MusicianCard( props : Musician ) {
     return (
-        <Link href={`/playlist/${props.musicianName}`}>
+        <Link href={`/musician/${props.musicianName}`}>
             <div className="w-[200px] h-[250px] hover:bg-zinc-800 p-2 rounded-2xl flex flex-col gap-2">
                 <div className="w-full flex justify-center">
-                    <Image src={props.coverUrl} alt={props.musicianName} width={180} height={180} className="rounded-full" />
+                    <Image src={props.avatarPic} alt={props.musicianName} width={180} height={180} className="rounded-full" />
                 </div>
                 <div className="card-title">
                     {props.musicianName}

@@ -15,6 +15,7 @@ export default function MusicPlayer() {
     const audioRef = useRef<HTMLAudioElement | null>(null); //trỏ tới thẻ <audio>, dùng để play/pause, lấy duration, currentTime, volume
     const [isPlaying, setIsPlaying] = useState(false);      //trạng thái nhạc đang chạy hay tạm dừng.
     const [progress, setProgress] = useState(0);            //trạng thái tiến trình bài hát (0=>100%)
+    const [duration, setDuration] = useState(0);            //đếm giờ trên thanh 
     const [volume, setVolume] = useState(100);              //trạng thái âm lượng (0=>100%)
     const [isShuffle, setIsShuffle] = useState(false);      // trạng thái Shuffle, khi true thì sẽ trộn bài ngẫu nhiên 
     const [repeatMode, setRepeatMode] = useState<0 | 1 | 2>(0);     // chế độ lặp lại. 0: none, 1: all, 2: one
@@ -85,6 +86,13 @@ export default function MusicPlayer() {
     const handlePrev = () => {
         playPrev();
     }
+
+    //hàm chuyển thời gian bài hát ra định dạng phút giây
+    const formatTime = (time: number) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+        return `${minutes}:${seconds}`;
+    };
     
     //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
     useEffect(() => {
@@ -138,11 +146,13 @@ export default function MusicPlayer() {
                         {repeatMode === 2 ? <Repeat1 size={20} /> : <Repeat size={20} className={repeatMode === 1 ? "text-green-500" : "text-gray-400 hover:text-white"} />}
                     </button>
                 </div>
-                <input 
-                    type="range" 
-                    value={progress} 
-                    onChange={handleSeek} 
-                    className="w-full h-1 bg-zinc-700 rounded-lg cursor-pointer accent-green-500"/>
+
+                {/* Thanh tiến trình */}
+                <div className="w-full flex gap-3 items-center text-[12px] text-gray-400">
+                    <span>{formatTime((progress/100) * duration)}</span>
+                    <input type="range" value={progress} onChange={handleSeek} className="w-full h-1 bg-zinc-700 rounded-lg cursor-pointer accent-green-500"/>
+                    <span>{formatTime((duration - (progress / 100) * duration))}</span>
+                </div>
             </div>
 
             {/* Right: Volume */}
@@ -163,6 +173,10 @@ export default function MusicPlayer() {
                 src={song.audioSrc} 
                 onTimeUpdate={handleTimeUpdate} 
                 onEnded={handleEnded}
+                onLoadedMetadata={() => {
+                    const audio = audioRef.current;
+                    if (audio) setDuration(audio.duration);
+                }}
                 preload="auto" />
         </div>
     );

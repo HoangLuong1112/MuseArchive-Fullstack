@@ -1,3 +1,4 @@
+'use client'
 import { Musician } from '@/types/song'
 import { useEffect, useState } from 'react'
 import Carousel from '../component/Carousel'
@@ -16,7 +17,7 @@ export default function MusicianPage() {
         <div className="">
             {/* Ở đây sử dụng Carousel có thể xài với mọi loại khung component */}
             <Carousel title="Nhạc sĩ hiện tại" items={musicians} renderItem={(musician, i) => (
-                <MusicianCard key={i} musicianName={musician.musicianName} coverUrl={musician.coverUrl} />
+                <MusicianCard key={i} musicianName={musician.musicianName} avatarPic={musician.avatarPic} />
             )}/>
         </div>
     )
