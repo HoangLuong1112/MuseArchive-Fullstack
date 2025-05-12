@@ -2,6 +2,8 @@
 
 import { Playlist } from '@/types/song'
 import { useEffect, useState } from 'react'
+// import PlaylistCarousel from '../component/PlaylistCarousel'
+import Carousel from '../component/Carousel'
 import PlaylistCard from '../component/PlaylistCard'
 /*      /playlist:
 - gọi API /api/playlists
@@ -9,7 +11,10 @@ import PlaylistCard from '../component/PlaylistCard'
 
         /playlist/:id:
 - gọi /api/playlists/:id
-- render danh sách bài hát trong playlist */
+- render danh sách bài hát trong playlist 
+
+	 Duyệt playlists để hiển thị từng playlist là một <Link> chuyển trang đến /playlist/[id] 
+*/
 
 export default function PlaylistPage() {
 	const [playlists, setPlaylists] = useState<Playlist[]>([])
@@ -22,19 +27,22 @@ export default function PlaylistPage() {
 		.then(data => setPlaylists(data))
 	}, [])
 
-	// alert(playlists);
-
 	return (
 		<div className="">
-			<h1 className="text-2xl font-bold">Các Playlist hiện tại</h1>
-			<div className="flex gap-10 ">
-				{/* Duyệt playlists để hiển thị từng playlist là một <Link> chuyển trang đến /playlist/[id] */}
+			{/* <h1 className="text-2xl font-bold">Các Playlist hiện tại</h1>
+			<div className="flex gap-5 ">
 				{playlists.map( (pl, index) => (
 					<div key={index} className=''>
 						<PlaylistCard playlistName={pl.playlistName} coverUrl={pl.coverUrl} description={pl.description} />
 					</div>
 				))}
 			</div>
+			<PlaylistCarousel title='Test danh mục' playlists={playlists} /> */}
+
+			{/* Ở đây sử dụng Carousel có thể xài với mọi loại khung component */}
+			<Carousel title="Playlist hiện tại" items={playlists} renderItem={(pl, i) => (
+				<PlaylistCard key={i} playlistName={pl.playlistName} coverUrl={pl.coverUrl} description={pl.description}/>
+			)}/>
 		</div>
  	)
 }

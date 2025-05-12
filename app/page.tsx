@@ -1,11 +1,14 @@
 'use client'
+import AlbumPage from "./album/page";
+import MusicianPage from "./musician/page";
 import PlaylistPage from "./playlist/page";
 
 export default function Home() {
 	return (
-		<div>
+		<div className="grid grid-cols-1 gap-8">
 			<PlaylistPage />
-			<div className="w-fit h-[5000px] bg-amber-400">Test page scroll</div>
+			<AlbumPage />
+			<MusicianPage />	
 		</div>
 	);
 }

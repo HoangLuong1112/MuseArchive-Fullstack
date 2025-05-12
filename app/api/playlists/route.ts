@@ -7,34 +7,34 @@ const playlists = [
     {
         playlistName: 'Lo-fi Chill',
         coverUrl: '/covers/1989-deluxe.jpg',
-        description: 'playlist taylor swift',
+        description: 'This is the longest description for Playlist component',
         
     },
     {
         playlistName: 'Pistisch',
         coverUrl: '/covers/Shake It Off.jpg',
-        description: 'test playlist 2',
+        description: 'This is a description for Playlist component',
     },
     {
         playlistName: 'Pistisch2',
         coverUrl: '/covers/Shake It Off.jpg',
-        description: 'test playlist 2',
+        description: 'This is a description for Playlist component',
     },
-    // {
-    //     playlistName: 'Pistisch3',
-    //     coverUrl: '/covers/Shake It Off.jpg',
-    //     description: 'test playlist 2',
-    // },
-    // {
-    //     playlistName: 'Pistisch4',
-    //     coverUrl: '/covers/Shake It Off.jpg',
-    //     description: 'test playlist 2',
-    // },
-    // {
-    //     playlistName: 'Pistisch5',
-    //     coverUrl: '/covers/Shake It Off.jpg',
-    //     description: 'test playlist 2',
-    // },
+    {
+        playlistName: 'Pistisch3',
+        coverUrl: '/covers/Shake It Off.jpg',
+        description: 'This is a description for Playlist component',
+    },
+    {
+        playlistName: 'Pistisch4',
+        coverUrl: '/covers/Shake It Off.jpg',
+        description: 'This is a description for Playlist component',
+    },
+    {
+        playlistName: 'Pistisch5',
+        coverUrl: '/covers/Shake It Off.jpg',
+        description: 'This is a description for Playlist component',
+    },
 ]
 
 export async function GET() {

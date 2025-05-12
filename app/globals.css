@@ -44,3 +44,20 @@ body {
 .bg-gray-500 {
   background-color: #a1a1a1; /* Màu cho thanh kéo */
 }
+
+/* Dùng để ẩn cái scrollbar đi mà vẫn kéo được */
+/* styles/globals.css hoặc app/globals.css */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.card-title {
+  @apply text-[16px] text-white line-clamp-1;
+}
+.card-subtitle {
+  @apply text-[15px] text-gray-400 line-clamp-1;
+}

@@ -8,8 +8,8 @@ export type SongProps = {
 export type Album = {
     albumName: string;
     coverUrl: string;
-    musician: string;
-    songslist: SongProps[];
+    musician?: string;
+    songslist?: SongProps[];
 }
 
 export type Playlist ={
@@ -26,10 +26,11 @@ export type SocialMedia = {
     youtube: string;   
 }
 
-export type Mucician = {
+export type Musician = {
     musicianName: string;
-	follower : number;
-	introduce : string;
+    coverUrl: string;
+	follower?: number;
+	introduce?: string;
 	socialMedia?: SocialMedia;
 }
 
