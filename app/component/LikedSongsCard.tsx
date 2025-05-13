@@ -3,9 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import ColorThief from 'colorthief';
+import { SongProps } from '@/types/song';
 
 interface LikedSongsCardProps {
-  likedSongs: any[]; // Cần thay thế với kiểu dữ liệu chính xác của likedSongs // tam thoi
+  likedSongs: SongProps[]; // Cần thay thế với kiểu dữ liệu chính xác của likedSongs // tam thoi
 }
 
 const LikedSongsCard: React.FC<LikedSongsCardProps> = ({ likedSongs }) => {

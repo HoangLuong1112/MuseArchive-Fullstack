@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Heart } from "lucide-react";
 import { playlists } from "../api/playlists/data";
 import { albums } from "../api/albums/data";
-import { Playlist, Album } from "@/types/song";
+import { Album } from "@/types/song";
 
 import Link from "next/link";
 
