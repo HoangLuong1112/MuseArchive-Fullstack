@@ -32,7 +32,7 @@ export const playlists = [
         playlistName: 'Pistisch',
         coverUrl: '/covers/Shake It Off.jpg',
         description: 'test playlist 2',
-        musician: 'Swift',
+        musician: 'Taylor Swift',
         songList: [
             {
                 "title": "Shake It Off",

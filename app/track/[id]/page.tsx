@@ -2,26 +2,26 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Album } from '@/types/song'
+import { SongProps } from '@/types/song'
 import Banner from '@/app/component/Banner'
 import SongList from '@/app/component/SongList'
 
-export default function AlbumDetail() {
+export default function TrackDetail() {
     const { id } = useParams()          //Dùng useParams() để lấy id từ URL: ví dụ /playlist/1 → id = '1'
-    const [album, setAlbum] = useState<Album | null>(null)
+    const [track, setTrack] = useState<SongProps | null>(null)
 
     useEffect(() => {
-        fetch(`/api/albums/${id}`)
+        fetch(`/api/tracks/${id}`)
         .then(res => res.json())
-        .then(data => setAlbum(data))
+        .then(data => setTrack(data))
     }, [id])
 
-    if (!album) return <div className="p-4">Đang tải...</div>
+    if (!track) return <div className="p-4">Đang tải...</div>
 
     return (
         <div className="">
-            <Banner type='Album' coverUrl={album.coverUrl} name={album.albumName} musician={album.musician} />
-            <SongList songlist={album.songList}/>
+            <Banner type='Bài hát' coverUrl={track.albumArt} name={track.title} musician={track.artist} />
+            <SongList songlist={[track]}/>
         </div>
     )
 }

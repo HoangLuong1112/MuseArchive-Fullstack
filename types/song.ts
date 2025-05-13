@@ -9,7 +9,7 @@ export type SongProps = {
 export type Album = {
     albumName: string;
     coverUrl: string;
-    musician?: string;
+    musician: string;
     songList?: SongProps[];
 }
 
@@ -17,7 +17,7 @@ export type Playlist ={
     playlistName: string;
     coverUrl: string;
     description?: string;
-    musician?: string;
+    musician: string;
     songList?: SongProps[];
 }
 

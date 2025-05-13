@@ -2,7 +2,7 @@ export const albums = [
     {
         albumName: 'Album về Taylor',
         coverUrl: '/covers/Shake It Off.jpg',
-        musician: 'Taylor',
+        musician: 'Taylor Swift',
         songList: [
             {
                 "title": "Blank Space",
@@ -18,7 +18,6 @@ export const albums = [
                 "audioSrc": "/songs/Shake It Off.mp3",
                 "duration": 310,
             },
-            
         ] ,
     }
 ]
