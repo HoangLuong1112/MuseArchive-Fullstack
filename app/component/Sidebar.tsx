@@ -57,9 +57,9 @@ const Sidebar = () => {
         <div>
           {/* Navigation */}
           <nav className="flex flex-col gap-4 mt-8">
-            <Link href=""><NavItem icon={Library} label="Your Library" collapsed={isCollapsed} /></Link>
+            <Link href="/librarypage"><NavItem icon={Library} label="Your Library" collapsed={isCollapsed} /></Link>
             <Link href="/createplaylistpage"><NavItem icon={Music} label="Create Playlist" collapsed={isCollapsed} /></Link>
-            <NavItem icon={Heart} label="Liked Songs" collapsed={isCollapsed} />
+            <Link href="/likedsongpage"><NavItem icon={Heart} label="Liked Songs" collapsed={isCollapsed} /></Link>
           </nav>
         </div>
 
