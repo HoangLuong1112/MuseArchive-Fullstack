@@ -11,37 +11,47 @@ const LoginPage = () => {
 	const [error, setError] = useState<string>("");
 	const router = useRouter();
 
-	const handleSubmit = async (e: FormEvent) => {
+	// const handleSubmit = async (e: FormEvent) => {
+	// 	e.preventDefault();
+	// 	setError("");
+
+	// 	try {
+	// 		const response = await fetch('/api/login', {
+	// 			method: 'POST',
+	// 			headers: {
+	// 				'Content-Type': 'application/json',
+	// 			},
+	// 			body: JSON.stringify({ userName, password }),
+	// 		});
+
+	// 		if (!response.ok) {
+	// 			const data = await response.json();
+	// 			throw new Error(data.error || "Đăng nhập thất bại");
+	// 		}
+
+	// 		const data = await response.json();
+	// 		if (response.ok && data.user) {
+	// 			login(data.user); // <-- lưu thông tin user
+	// 			router.push('/');
+	// 		} else {
+	// 			setError(data.error || 'Lỗi đăng nhập');
+	// 		}
+	// 	} catch (err: unknown) {
+	// 		if (err instanceof Error) {
+	// 			setError(err.message);
+	// 		} else {
+	// 			setError("Đã xảy ra lỗi không xác định");
+	// 		}
+	// 	}
+	// };
+
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setError("");
-
 		try {
-			const response = await fetch('/api/login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ userName, password }),
-			});
-
-			if (!response.ok) {
-				const data = await response.json();
-				throw new Error(data.error || "Đăng nhập thất bại");
-			}
-
-			const data = await response.json();
-			if (response.ok && data.user) {
-				login(data.user); // <-- lưu thông tin user
-				router.push('/');
-			} else {
-				setError(data.error || 'Lỗi đăng nhập');
-			}
-		} catch (err: unknown) {
-			if (err instanceof Error) {
-				setError(err.message);
-			} else {
-				setError("Đã xảy ra lỗi không xác định");
-			}
+			await login(userName, password);
+			router.push('/');
+		} catch (err) {
+			setError('Đăng nhập sai rồi ');
 		}
 	};
 
