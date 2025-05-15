@@ -123,7 +123,7 @@ export default function MusicPlayer() {
                 <Image src={song.albumArt} alt="Album Art" width={48} height={48} className="rounded-md object-cover" />
                 <div>
                     <h4 className="text-sm font-semibold">{song.title}</h4>
-                    <p className="text-xs text-zinc-400">{song.artist}</p>
+                    <p className="text-xs text-zinc-400">{song.artist.name}</p>
                 </div>
             </div>
 

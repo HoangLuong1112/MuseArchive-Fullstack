@@ -2,8 +2,8 @@
 import { Heart, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import SidebarPlaylistCard from './SidebarPlaylistCard';
-import { playlists } from '../api/playlists/data';
+// import SidebarPlaylistCard from './SidebarPlaylistCard';
+// import { playlists } from '../api/playlists/data';
 
 const MIN_WIDTH = 90;
 const MAX_WIDTH = 300;
@@ -137,11 +137,11 @@ const Sidebar = () => {
 
 
         {/* === Playlist === */}
-        <div className="mt-4 flex-1 overflow-auto">
+        {/* <div className="mt-4 flex-1 overflow-auto">
           {playlists.map((playlist, index) => (
             <SidebarPlaylistCard key={index} playlist={playlist} collapsed={isCollapsed} />
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* RESIZER - tách ra ngoài sidebar để luôn hiển thị */}

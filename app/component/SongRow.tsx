@@ -4,6 +4,7 @@ import { SongProps } from '@/types/song'
 import { FaHeart, FaRegHeart, FaEllipsisH } from 'react-icons/fa'
 import { usePlayer } from '../context/PlayerContext'
 import { useState } from 'react'
+import Link from 'next/link'
 
 interface SongRowProps {
 	song: SongProps
@@ -44,8 +45,12 @@ export default function SongRow({ song, index, songlist }: SongRowProps) {
 
             {/* Cột 2 */}
 			<div className="col-span-6">
-				<div className="font-medium text-white">{song.title}</div>
-				<div className="text-sm text-gray-400">{song.artist}</div>
+				<Link href={`/track/${song.id}`}>
+					<div className="font-medium text-white hover:underline">{song.title}</div>
+				</Link>
+				<Link href={`/musician/${song.artist.id}`}>
+					<div className="text-sm text-gray-400 hover:underline">{song.artist.name}</div>
+				</Link>
 			</div>
 
             {/* cột 3 */}

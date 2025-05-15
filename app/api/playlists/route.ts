@@ -6,7 +6,7 @@ import { playlists } from "./data";
 
 export async function GET() {
     return NextResponse.json(
-        playlists.map(p => ({ playlistName: p.playlistName, coverUrl: p.coverUrl, description: p.description }))
+        playlists.map(p => ({ id: p.id, coverUrl: p.coverUrl, description: p.description }))
     );
 }
   

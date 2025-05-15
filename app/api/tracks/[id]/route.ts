@@ -8,7 +8,7 @@ export async function GET(
 ) {
     const {id} = await params;
   
-    const track = tracks.find(p => p.title === id);
+    const track = tracks.find(p => p.id === id);
 
     if (!track) {
         return NextResponse.json({ error: 'Not found' }, { status: 404 })

@@ -7,7 +7,7 @@ import { tracks } from "./data";
         "duration": 240, */
 export async function GET() {
     return NextResponse.json(
-        tracks.map(p => ({ title: p.title, artist: p.artist, albumArt: p.albumArt, audioSrc: p.audioSrc, duration: p.duration }))
+        tracks.map(p => ({ id: p.id, title: p.title, albumArt: p.albumArt }))
     );
 }
   

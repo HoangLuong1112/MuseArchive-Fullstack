@@ -5,7 +5,11 @@ import { useParams } from 'next/navigation'
 import { Musician } from '@/types/song'
 import Image from 'next/image'
 import { BsFillPeopleFill } from 'react-icons/bs'
-import { FaCheck, FaPlay } from 'react-icons/fa'
+import { FaCheck, FaFacebook, FaInstagram, FaPlay, FaTwitter, FaYoutube } from 'react-icons/fa'
+import SongList from '@/app/component/SongList'
+import Carousel from '@/app/component/Carousel'
+import AlbumCard from '@/app/component/AlbumCard'
+import Link from 'next/link'
 // import SongList from '@/app/component/SongList'
 
 
@@ -13,6 +17,7 @@ export default function MusicianDetail() {
     const { id } = useParams();           //Dùng useParams() để lấy id từ URL: ví dụ /playlist/1 → id = '1'
     const [musician, setMusician] = useState<Musician | null>(null);
     const [activeTab, setActiveTab] = useState<'popular' | 'albums'>('popular');
+    const [isFollowing, setIsFollowing] = useState(false);
 
     useEffect(() => {
         fetch(`/api/musicians/${id}`)
@@ -22,16 +27,16 @@ export default function MusicianDetail() {
 
     // hàm theo dõi, làm tạm cập nhập follower
     const toggleFollow = () => {
-        if (!musician) return
-        const isFollowing = musician.isFollowing ?? false;
+        if (!musician) return;
         const follower = musician.follower ?? 0;
 
         const updatedMusician = {
             ...musician,
-            isFollowing: !isFollowing,
             follower: isFollowing ? follower - 1 : follower + 1
         };
         setMusician(updatedMusician)
+
+        setIsFollowing(!isFollowing);
     }
 
     if (!musician) return <div className="p-4">Đang tải...</div>
@@ -63,8 +68,8 @@ export default function MusicianDetail() {
                                     <BsFillPeopleFill />
                                     <span>{musician.follower} follower</span>
                                 </div>
-                                <button onClick={toggleFollow} className={`px-4 py-1 rounded-full font-semibold ${musician.isFollowing ? 'bg-white text-black' : 'bg-transparent border border-white'}`}>
-                                    {musician.isFollowing ? 'Following' : 'Follow'}
+                                <button onClick={toggleFollow} className={`px-4 py-1 rounded-full font-semibold ${isFollowing ? 'bg-white text-black' : 'bg-transparent border border-white'}`}>
+                                    {isFollowing ? 'Following' : 'Follow'}
                                 </button>
                             </div>
                         </div>
@@ -87,46 +92,41 @@ export default function MusicianDetail() {
                 {/* Nội dung tab */}
                 {activeTab === 'popular' ? (
                     <div>
+                        <span>Các bài hát phổ biến</span>
                         {/* Nút phát */}
                         <button className="bg-green-500 hover:bg-green-600 text-black font-bold py-3 px-6 rounded-full mb-6 flex items-center gap-2">
                             <FaPlay /> Play
                         </button>
-
                         {/* Danh sách bài hát phổ biến */}
-                        fav
+                        <SongList songlist={musician.topSongs} />
                     </div>
                 ) : (
                     <div>
                         {/* Danh sách album */}
-                        {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                            {artist.albums.map(album => (
-                                <div key={album.id} className="group">
-                                    <div className="relative mb-3">
-                                        <Image
-                                            src={album.coverImage}
-                                            alt={album.title}
-                                            width={50}
-                                            height={50}
-                                            className="w-full aspect-square object-cover rounded shadow-lg group-hover:opacity-80 transition"
-                                        />
-                                        <button className="absolute bottom-2 right-2 bg-green-500 rounded-full p-3 opacity-0 group-hover:opacity-100 transition">
-                                            <FaPlay className="text-black" />
-                                        </button>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold">{album.title}</h3>
-                                        <p className="text-sm text-gray-400">{album.year} • Album</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div> */}
+                        <Carousel title={`Các album của ${musician.musicianName}`} items={musician.albums ?? []} renderItem={(al, i) => (
+                            <AlbumCard key={i} id={al.id} albumName={al.albumName} coverUrl={al.coverUrl} musician={al.musician}/>
+                        )}/>
                     </div>
                 )}
 
                 {/* Giới thiệu nghệ sĩ */}
-                <div className="mt-12">
-                    <h2 className="text-2xl font-bold mb-4">About</h2>
+                <div className="mt-12 flex flex-col gap-5   ">
+                    <h2 className="text-2xl font-bold">About</h2>
                     <p className="text-gray-300 max-w-3xl">{musician.about}</p>
+                    <div className='flex gap-5 items-center'>
+                        {musician.socialMedia?.xLink && (
+                            <Link href={musician.socialMedia.xLink}><FaTwitter size={24} /></Link>
+                        )}
+                        {musician.socialMedia?.faceLink && (
+                            <Link href={musician.socialMedia.faceLink}><FaFacebook size={24} /></Link>
+                        )}
+                        {musician.socialMedia?.instaLink && (
+                            <Link href={musician.socialMedia.instaLink}><FaInstagram size={30} /></Link>
+                        )}
+                        {musician.socialMedia?.youtubeLink && (
+                            <Link href={musician.socialMedia.youtubeLink}><FaYoutube size={30} /></Link>
+                        )}
+                    </div>
                 </div>
 
                 

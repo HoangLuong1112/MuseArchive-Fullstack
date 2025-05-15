@@ -2,7 +2,6 @@
 
 import { Playlist } from '@/types/song'
 import { useEffect, useState } from 'react'
-// import PlaylistCarousel from '../component/PlaylistCarousel'
 import Carousel from '../component/Carousel'
 import PlaylistCard from '../component/PlaylistCard'
 /*      /playlist:
@@ -31,7 +30,7 @@ export default function PlaylistPage() {
 		<div className="">
 			{/* Ở đây sử dụng Carousel có thể xài với mọi loại khung component */}
 			<Carousel title="Playlist hiện tại" items={playlists} renderItem={(pl, i) => (
-				<PlaylistCard key={i} playlistName={pl.playlistName} coverUrl={pl.coverUrl} description={pl.description}/>
+				<PlaylistCard key={i} id={pl.id} coverUrl={pl.coverUrl} description={pl.description}/>
 			)}/>
 		</div>
  	)

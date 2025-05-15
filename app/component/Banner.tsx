@@ -6,19 +6,55 @@ export type Banner = {
     coverUrl: string;
     name: string;
     description?: string;
-    musician: string;
+    musician?: {
+        id: string;
+        name: string;
+    };
+    createdBy?: string;
+    numberofsong?: number;
+    duration: string;
+    dayAdd?: string;
+    views?: number;
+    album?: {
+        id: string;
+        name: string;
+    }
 }
 
-export default function Banner({type, coverUrl, name, description, musician}: Banner) {
+export default function Banner({type, coverUrl, name, description, musician, createdBy, dayAdd, numberofsong, duration, views, album}: Banner) {
+    const year= dayAdd?.split('-')[0];
+
     return(
-        <div className='flex gap-5 p-5'>
+        <div className='flex gap-5 p-5 h-[300px]'>
             <Image src={coverUrl} alt='Cover' height={350} width={350} className='rounded-2xl' />
-            <div className='w-full h-full bottom-0 flex flex-col'>
+            <div className='w-full h-full bottom-0 flex flex-col gap-3 justify-end'>
                 <p>{type}</p>
                 <p className="title">{name}</p>
-                <p className='card-subtitle'>{description}</p>		
-                <Link href={`/musician/${musician}`} className="font-bold hover:underline">{musician}</Link>
+                <p className='card-subtitle'>{description}</p>	
+                <div>
+                    <Link href={`/musician/${musician?.id}`} className="font-bold hover:underline">{musician?.name}</Link>
+                    {createdBy && (
+                        <span className="text-gray-400 hover:underline">Tạo bởi {createdBy}</span>
+                    )}
+                    {album &&(
+                        <span className="before:content-['•'] before:mx-2">
+                            <Link href={`/album/${album.id}`} className="text-gray-400 hover:underline">{album.name}</Link>
+                        </span>
+                    )}
+                    {dayAdd &&(
+                        <span title={dayAdd} className="before:content-['•'] before:mx-2 text-gray-400">{year}</span>
+                    )}
+                    { numberofsong && (
+                        <span className="before:content-['•'] before:mx-2 text-gray-400">{numberofsong} bài hát</span>
+                    )}
+                    <span className="before:content-['•'] before:mx-2 text-gray-400">{duration}</span>
+                    { views && (
+                        <span title="Lượt xem" className="before:content-['•'] before:mx-2 text-gray-400">{views}</span>
+                    )}
+                </div>
             </div>
         </div>
+
+
     )
 }

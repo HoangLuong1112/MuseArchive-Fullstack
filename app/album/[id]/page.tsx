@@ -16,12 +16,24 @@ export default function AlbumDetail() {
         .then(data => setAlbum(data))
     }, [id])
 
+    // hàm tính thời gian
+    const totalDuration = album?.songs?.reduce((sum, song) => sum + (song.duration || 0), 0) ?? 0;
+    // hàm đổi thời gian ra đơn vị
+    const formatDuration = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins} phút ${secs.toString().padStart(2, '0')} giây`;
+    };
+    //  số thời gian
+    const totalDurationString = formatDuration(totalDuration);
+    //  số bài hát
+
     if (!album) return <div className="p-4">Đang tải...</div>
 
     return (
         <div className="">
-            <Banner type='Album' coverUrl={album.coverUrl} name={album.albumName} musician={album.musician} />
-            <SongList songlist={album.songList}/>
+            <Banner type='Album' coverUrl={album.coverUrl} name={album.albumName} musician={album.musician} dayAdd={album.dayAdd} numberofsong={album?.songs?.length} duration={totalDurationString}/>
+            <SongList songlist={album.songs}/>
         </div>
     )
 }

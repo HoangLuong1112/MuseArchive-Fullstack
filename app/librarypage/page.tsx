@@ -41,8 +41,8 @@ const Library: React.FC = () => {
               <Image src={playlist.coverUrl} alt={playlist.playlistName} className="w-full h-40 object-cover rounded-lg mb-3"  width={40} height={40}/>
               <h4 className="text-white font-semibold text-lg">{playlist.playlistName}</h4>
               <p className="text-sm text-neutral-400">{playlist.description}</p>
-              {playlist.musician && (
-                <p className="text-xs text-neutral-500 mt-1">By {playlist.musician}</p>
+              {playlist.createdby && (
+                <p className="text-xs text-neutral-500 mt-1">By {playlist.createdby}</p>
               )}
             </div>
           ))}
@@ -58,7 +58,7 @@ const Library: React.FC = () => {
               <Image src={album.coverUrl} alt={album.albumName} className="w-full h-32 object-cover rounded-md mb-2" width={32} height={32}/>
               <p className="text-white text-sm font-medium">{album.albumName}</p>
               {album.musician && (
-                <p className="text-xs text-neutral-400">by {album.musician}</p>
+                <p className="text-xs text-neutral-400">by {album.musician.name}</p>
               )}
             </div>
           ))}

@@ -17,7 +17,7 @@ export default function AlbumPage() {
         <div className="">
             {/* Ở đây sử dụng Carousel có thể xài với mọi loại khung component */}
             <Carousel title="Album hiện tại" items={albums} renderItem={(al, i) => (
-                <AlbumCard key={i} albumName={al.albumName} coverUrl={al.coverUrl} musician={al.musician}/>
+                <AlbumCard key={i} id={al.id} albumName={al.albumName} coverUrl={al.coverUrl} musician={al.musician}/>
             )}/>
         </div>
     )

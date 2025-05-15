@@ -59,8 +59,8 @@ body {
   @apply text-[16px] text-white line-clamp-1;
 }
 .card-subtitle {
-  @apply text-[15px] text-gray-400 line-clamp-1;
+  @apply text-[16px] text-gray-400 line-clamp-1;
 }
 .title {
-  @apply text-[70px] font-bold;
+  @apply text-[70px] font-bold leading-24;
 }

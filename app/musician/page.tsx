@@ -17,7 +17,7 @@ export default function MusicianPage() {
         <div className="">
             {/* Ở đây sử dụng Carousel có thể xài với mọi loại khung component */}
             <Carousel title="Nhạc sĩ hiện tại" items={musicians} renderItem={(musician, i) => (
-                <MusicianCard key={i} musicianName={musician.musicianName} avatarPic={musician.avatarPic} />
+                <MusicianCard key={i} id={musician.id} musicianName={musician.musicianName} avatarPic={musician.avatarPic} />
             )}/>
         </div>
     )
