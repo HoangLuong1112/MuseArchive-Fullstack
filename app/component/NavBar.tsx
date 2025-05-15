@@ -1,12 +1,21 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
-import { Home, Search, Bell, ChevronDown } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Home, Search, ChevronDown } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useAuth } from '@/app/context/AuthContext'; // ⬅ Thêm dòng này
 
 const NavBar: React.FC = () => {
-    const [showMenu, setShowMenu] = useState(false)
+    const [showMenu, setShowMenu] = useState(false);
+    const { currentUser, logout } = useAuth(); // ⬅ Lấy user + logout
+    const router = useRouter();
+
+    const handleLogout = () => {
+        logout();
+        router.push('/loginpage');
+    };
 
     return (
         <div className="w-full h-16 px-6 flex items-center justify-between bg-black text-white shadow-sm relative py-4">
@@ -18,7 +27,6 @@ const NavBar: React.FC = () => {
                         alt="Spotify Logo"
                         width={32}
                         height={32}
-                        className=""
                     />
                 </Link>
             </div>
@@ -32,7 +40,6 @@ const NavBar: React.FC = () => {
                     </button>
                 </Link>
 
-
                 <div className="flex items-center bg-neutral-800 px-3 py-1.5 rounded-full w-full max-w-md hover:bg-neutral-700 transition">
                     <Search size={18} className="text-gray-400" />
                     <input
@@ -45,41 +52,49 @@ const NavBar: React.FC = () => {
 
             {/* Right: Notification + User */}
             <div className="flex items-center gap-4 relative">
-                <button className="p-2 rounded-full hover:bg-neutral-800 transition">
+                {/* <button className="p-2 rounded-full hover:bg-neutral-800 transition">
                     <Bell size={20} />
-                </button>
+                </button> */}
 
-                {/* User Avatar with dropdown */}
-                <div className="relative">
-                    <button
-                        onClick={() => setShowMenu(!showMenu)}
-                        className="flex items-center gap-2 bg-gray-700 rounded-full px-3 py-1 hover:bg-gray-600 transition"
-                    >
-                        <div className="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center text-sm font-bold">
-                            U
-                        </div>
-                        <ChevronDown size={16} />
-                    </button>
+                {/* User Avatar with dropdown (chỉ hiện nếu đã đăng nhập) */}
+                {currentUser ? (
+                    <div className="relative">
+                        <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-2 bg-gray-700 rounded-full px-3 py-1 hover:bg-gray-600 transition">
+                            
+                            {currentUser?.avatarPic ? (
+                                <Image src={currentUser.avatarPic} alt="avatar" width={24} height={24} className="rounded-full" />
+                            ) : (
+                                <div className="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center text-sm font-bold">
+                                    {currentUser.userName.charAt(0).toUpperCase()}
+                                </div>
+                            )}
+                            <ChevronDown size={16} />
+                        </button>
 
-                    {showMenu && (
-                        <div className="absolute right-0 mt-2 w-48 bg-neutral-800 rounded-lg shadow-lg py-2 z-50">
-                            <Link href="/profile"><button className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-700">
-                                Trang cá nhân
-                            </button></Link>
-                            <button className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-700">
-                                Cài đặt
-                            </button>
-                            <Link href={"/loginpage"}>
-                                <button className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-700 text-red-400">
+                        {showMenu && (
+                            <div className="absolute right-0 mt-2 w-48 bg-neutral-800 rounded-lg shadow-lg py-2 z-50">
+                                <Link href="/profile">
+                                    <button className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-700">
+                                        Trang cá nhân
+                                    </button>
+                                </Link>
+                                {/* <button className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-700">
+                                    Cài đặt
+                                </button> */}
+                                <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-700 text-red-400">
                                     Đăng xuất
                                 </button>
-                            </Link>
-                        </div>
-                    )}
-                </div>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <Link href="/loginpage" className="text-green-400 hover:text-white rounded-4xl px-4 py-2 border-2 border-white hover:border-black hover:bg-green-400">
+                        Đăng nhập
+                    </Link>
+                )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default NavBar
+export default NavBar;

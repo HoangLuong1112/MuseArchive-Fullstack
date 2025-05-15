@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { Musician } from '@/types/song'
 import Image from 'next/image'
 import { BsFillPeopleFill } from 'react-icons/bs'
-import { FaCheck, FaFacebook, FaInstagram, FaPlay, FaTwitter, FaYoutube } from 'react-icons/fa'
+import { FaCheck, FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'
 import SongList from '@/app/component/SongList'
 import Carousel from '@/app/component/Carousel'
 import AlbumCard from '@/app/component/AlbumCard'
@@ -44,7 +44,7 @@ export default function MusicianDetail() {
     return (
         <div className="text-white min-h-screen rounded-lg">
             {/* Header với ảnh cover */}
-            <div className="relative  rounded-lg">
+            <div className="relative rounded-lg">
                 <div className="h-64 w-full bg-gradient-to-b from-purple-900 to-black rounded-lg"
                     style={{
                         backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9)), url(${musician.coverPic})`,
@@ -92,11 +92,9 @@ export default function MusicianDetail() {
                 {/* Nội dung tab */}
                 {activeTab === 'popular' ? (
                     <div>
-                        <span>Các bài hát phổ biến</span>
-                        {/* Nút phát */}
-                        <button className="bg-green-500 hover:bg-green-600 text-black font-bold py-3 px-6 rounded-full mb-6 flex items-center gap-2">
-                            <FaPlay /> Play
-                        </button>
+                        <div className='flex gap-10 items-center mb-6'>
+                            <span className='text-4xl font-bold'>Các bài hát phổ biến</span>
+                        </div>
                         {/* Danh sách bài hát phổ biến */}
                         <SongList songlist={musician.topSongs} />
                     </div>

@@ -41,7 +41,7 @@ export type Playlist ={
     createdby?: string; //hiển thị user đã tạo cái playlist này hoặc khỏi hiện luôn
     dayAdd?: string;
     songList?: string[];
-    songs: SongProps[];
+    songs?: SongProps[];
 }
 
 export type Musician = {
@@ -70,8 +70,9 @@ export type Account = {
     email: string;
     gender: boolean;
     birthday: string;
+    avatarPic: string;
     
-    likedSong?: string[]; //["shake-it-off", "alabama-sweet-home"]
-    followed?: string[];    //các nhạc sĩ mà user đã nhấn theo dõi
-    userPlaylist?: string[];  //để id các playlist mà user đã tại
+    likedSong: string[]; //["shake-it-off", "alabama-sweet-home"]
+    followed: string[];    //các nhạc sĩ mà user đã nhấn theo dõi
+    userPlaylist: string[];  //để id các playlist mà user đã tại
 }

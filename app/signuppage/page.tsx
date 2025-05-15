@@ -10,7 +10,7 @@ export default function SignUpPage() {
         password: '',
         email: '',
         gender: true,
-        birthday: ''
+        birthday: '',
     });
 
     const [error, setError] = useState('');
@@ -24,19 +24,43 @@ export default function SignUpPage() {
         }));
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        if (!formData.username || !formData.password || !formData.email) {
-            setError('Vui lòng điỞn đầy đủ thông tin bắt buộc.');
-            return;
-        }
-
-        // TODO: Gửi dữ liệu đến backend
-
         setError('');
-        setSuccess('Ğăng ký thành công!');
-        router.push("/loginpage");
+		setSuccess('');
+
+		try {
+			const res = await fetch('/api/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: formData.username,
+					password: formData.password,
+					email: formData.email,
+					gender: formData.gender,
+					birthday: formData.birthday
+				})
+			});
+
+			const data = await res.json();
+			if (!res.ok) {
+				throw new Error(data.error || 'Đăng ký thất bại');
+			}
+
+			setSuccess('Đăng ký thành công!');
+			setTimeout(() => {
+				router.push('/loginpage');
+			}, 1500);
+		} catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Đã xảy ra lỗi không xác định");
+            }
+        }
     };
 
     return (
@@ -56,7 +80,7 @@ export default function SignUpPage() {
                             value={formData.username}
                             onChange={handleChange}
                             className="w-full p-3 mt-1 bg-[#333] text-white rounded-md"
-                            placeholder="Nhập tên ngưỞi dùng"
+                            placeholder="Nhập tên người dùng"
                             required
                         />
                     </div>
@@ -129,7 +153,7 @@ export default function SignUpPage() {
                         type="submit"
                         className="w-full p-3 bg-[#1DB954] text-white rounded-md hover:bg-[#1ED760]"
                     >
-                        Ğăng ký
+                        Đăng ký
                     </button>
 
                     <div className="mt-4 text-center text-white">

@@ -10,7 +10,7 @@ interface SidebarPlaylistCardProps {
 
 const SidebarPlaylistCard: React.FC<SidebarPlaylistCardProps> = ({ playlist, collapsed }) => {
     return (
-        <Link href={`/playlist`}>
+        <Link href={`/playlist/${playlist.id}`}>
             <div className="flex items-center gap-3 hover:bg-gray-800 rounded cursor-pointer transition w-full px-2 py-2">
                 <div className="w-10 h-10 rounded bg-gray-700 overflow-hidden flex-shrink-0">
                     {playlist.coverUrl ? (
