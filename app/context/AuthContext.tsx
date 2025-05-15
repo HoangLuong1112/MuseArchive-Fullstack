@@ -6,6 +6,7 @@ type AuthContextType = {
     currentUser: Account | null;
     login: (user: Account) => void;
     logout: () => void;
+    setCurrentUser: React.Dispatch<React.SetStateAction<Account | null>>;
 };
 //Context để xác nhận tài khoản
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ currentUser, login, logout }}>
+        <AuthContext.Provider value={{ currentUser, login, logout, setCurrentUser }}>
         {children}
         </AuthContext.Provider>
     );

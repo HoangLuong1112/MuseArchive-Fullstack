@@ -5,6 +5,8 @@ import Link from 'next/link';
 import SidebarPlaylistCard from './SidebarPlaylistCard';
 import { playlists } from '../api/playlists/data';
 import { useAuth } from '../context/AuthContext';
+import { Playlist } from '@/types/song';
+import CreatePlaylistModal from './CreatePlaylistModal';
 
 const MIN_WIDTH = 90;
 const MAX_WIDTH = 300;
@@ -15,11 +17,26 @@ const Sidebar = () => {
 	const isResizing = useRef(false);
 	const isCollapsed = sidebarWidth <= 90;
 	const [showMenu, setShowMenu] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 
 	//hàm lọc các playlist ra
 	const userPlaylists = playlists.filter(p =>
 		currentUser?.userPlaylist.includes(p.id)
 	);
+	const handleCreate = (newPlaylist: Playlist) => {
+		const normalizedPlaylist = {
+		id: newPlaylist.id,
+		playlistName: newPlaylist.playlistName,
+		coverUrl: newPlaylist.coverUrl,
+		description: newPlaylist.description || '',
+		createdby: newPlaylist.createdby || 'unknown',
+		dayAdd: newPlaylist.dayAdd || new Date().toISOString(),
+		songList: newPlaylist.songList || []
+	};
+		playlists.push(normalizedPlaylist);
+		alert('🎉 Playlist đã được tạo!');
+		setShowModal(false);
+	};
 
 
 	const startResizing = (e: React.MouseEvent) => {
@@ -77,13 +94,15 @@ const Sidebar = () => {
 
 						{showMenu && (
 							<div className="absolute top-10 left-0 bg-zinc-800 border border-gray-700 rounded shadow-md w-40 z-60">
-								<Link href="/createplaylistpage">
-									<button
-										onClick={() => setShowMenu(false)}
-										className="w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer">
-										Tạo Playlist
-									</button>
-								</Link>
+								{/* Gọi modal thay vì Link */}
+								<button
+									onClick={() => {
+										setShowModal(true);
+										setShowMenu(false);
+									}}
+									className="w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer">
+									Tạo Playlist
+								</button>
 							</div>
 						)}
 					</div>
@@ -146,6 +165,16 @@ const Sidebar = () => {
 			{/* RESIZER - tách ra ngoài sidebar để luôn hiển thị */}
 			<div onMouseDown={startResizing} className="w-1 h-full  cursor-ew-resize" style={{ position: 'relative', zIndex: 0 }}/>
 		
+			{showModal && (
+			<div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-60">
+				<div className="relative bg-black">
+					<CreatePlaylistModal onCreate={handleCreate} />
+					<button onClick={() => setShowModal(false)} className="absolute top-2 right-2 text-white text-xl hover:text-red-400">
+						×
+					</button>
+				</div>
+			</div>
+)}
 		</div>
 	);
 };

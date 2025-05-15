@@ -17,7 +17,6 @@ export type SongProps = {
     };
     videoSrc: string;
     // các bài hát đơn ko có album gọi là track
-    // làm lại DATA, có thêm id cho data, thử gộp DATA từng loại thành từng file DATA khác nhau coi nó chạy được không !!!!!
 };
 
 export type Album = {
@@ -40,8 +39,8 @@ export type Playlist ={
     description?: string;
     createdby?: string; //hiển thị user đã tạo cái playlist này hoặc khỏi hiện luôn
     dayAdd?: string;
-    songList?: string[];
-    songs?: SongProps[];
+    songList?: string[];//lưu id bài hát
+    songs?: SongProps[];// trường này ko lưu dữ liệu sẵn (trong data của album sẽ ko có sẵn, chỉ khi qua trang bên trong playlist nó lấy danh sách từ songList nạp từ [id] qua)
 }
 
 export type Musician = {

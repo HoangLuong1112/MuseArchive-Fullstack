@@ -1,22 +1,36 @@
 'use client'
 
-// import { useState } from 'react';
-// import LikedSongsCard from '../component/LikedSongsCard';
-// import SongList from '../component/SongList';
-
+import { tracks } from "../api/tracks/data";
+import SongList from "../component/SongList";
+import { useAuth } from "../context/AuthContext";
 
 export default function LikedSongsPage() {
-    // const [likedSongsList, setLikedSongsList] = useState([]); // gọi api sau
+    const {currentUser} = useAuth();
 
-    // if (!likedSongsList) return <div className="p-4">Đang tải...</div>
+    //lấy danh sách playlist
+    const likedList = tracks.filter(p =>
+        currentUser?.likedSong.includes(p.id)
+    );
+    //đổi số phút giây
+    const totalDuration = likedList.reduce((sum, song) => sum + (song.duration || 0), 0) ?? 0;
+    const formatDuration = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins} phút ${secs.toString().padStart(2, '0')} giây`;
+    };
+    const totalDurationString = formatDuration(totalDuration);
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            {/* <LikedSongsCard likedSongs={likedSongsList}/>
-            {likedSongsList.length > 0 ?
-                <SongList songlist={likedSongsList} />
-                : <h2 className="align-center text-center my-6 text-lg">Chưa có bài hát nào!</h2>
-            } */}
+        <div className="min-h-screen text-white">
+            <div className='bg-gradient-to-r from-blue-800 to-purple-800 w-full h-full flex flex-col gap-3 mb-5 rounded-2xl p-5'>
+                <p className="title">Các bài hát yêu thích</p>	
+                <div>
+                    <span className="text-gray-300">Tạo bởi {currentUser?.userName}</span>
+                    <span className="before:content-['•'] before:mx-2 text-gray-300">Có {currentUser?.likedSong.length} bài hát</span>
+                    <span className="before:content-['•'] before:mx-2 text-gray-300">{totalDurationString}</span>
+                </div>
+            </div>
+            <SongList songlist={likedList}/>
         </div>
     );
 }
