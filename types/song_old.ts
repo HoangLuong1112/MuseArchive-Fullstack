@@ -6,16 +6,16 @@ export type SongProps = {
         name: string;
     };
     albumArt: string;
-    audioSrc: File;
+    audioSrc: string;
     duration?: number;
 
-    dayAdd: string; //yyyy-mm-dd
+    dayAdd: string;
     views: number;
     album: {
         id: string;
         name: string;
     };
-    videoSrc: File;
+    videoSrc: string;
     // các bài hát đơn ko có album gọi là track
 };
 
@@ -28,7 +28,8 @@ export type Album = {
         name: string;
     };
     dayAdd?: string;
-    songs?: SongProps[]; //backend trả dữ liệu bài hát về khi nhấn vào chi tiết bài hát
+    songList?: string[]; //chỉ để lưu id bài hát
+    songs?: SongProps[]; // trường này ko lưu dữ liệu sẵn (trong data của album sẽ ko có sẵn, chỉ khi qua trang bên trong playlist nó lấy danh sách từ songList nạp từ [id] qua)
 }
 
 export type Playlist ={
@@ -38,15 +39,15 @@ export type Playlist ={
     description?: string;
     createdby?: string; //hiển thị user đã tạo cái playlist này hoặc khỏi hiện luôn
     dayAdd?: string;
-    dayUpdate: string;
-    songs?: SongProps[];
+    songList?: string[];//lưu id bài hát
+    songs?: SongProps[];// trường này ko lưu dữ liệu sẵn (trong data của album sẽ ko có sẵn, chỉ khi qua trang bên trong playlist nó lấy danh sách từ songList nạp từ [id] qua)
 }
 
 export type Musician = {
     id: string;
     musicianName: string;
-    avatarPic: string;  // ảnh avatar
-    coverPic?: string; //ảnh bìa
+    avatarPic: string;
+    coverPic?: string;
 	follower?: number;
 	about?: string;
 	socialMedia?: {
@@ -57,8 +58,9 @@ export type Musician = {
     }
     isVerified?: boolean;
 
-    topSongs?: SongProps[]; //  2 cái danh sách top song và album, hoạt động như songs?: SongProps[] trên album
-    albums?: Album[];   //      danh sách album của nhạc sĩ đó, để id rồi search bài hát ?
+    // 2 cái danh sách top song và album, hoạt động như songs?: SongProps[] trên album
+    topSongs?: SongProps[];
+    albums?: Album[];   //danh sách album của nhạc sĩ đó
 }
 
 export type Account = {
@@ -69,7 +71,7 @@ export type Account = {
     birthday: string;
     avatarPic: string;
     
-    likedSong: string[];    // danh sách các bài hát yêu thích, trả id bài hát ["shake-it-off", "alabama-sweet-home"]
-    followed: string[];     //các nhạc sĩ mà user đã nhấn theo dõi, trả id nhạc sĩ
-    userPlaylist: string[];  //để id playlist mà user đã tạo
+    likedSong: string[]; //["shake-it-off", "alabama-sweet-home"]
+    followed: string[];    //các nhạc sĩ mà user đã nhấn theo dõi
+    userPlaylist: string[];  //để id các playlist mà user đã tại
 }
