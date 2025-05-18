@@ -1,0 +1,73 @@
+Các Điểm Cuối API của Ứng dụng Spotify
+
+API Nhạc sĩ:
+GET /api/musicians/ - Liệt kê tất cả nhạc sĩ
+POST /api/musicians/ - Tạo một nhạc sĩ mới
+GET /api/musicians/{id}/ - Lấy chi tiết nhạc sĩ
+PUT /api/musicians/{id}/ - Cập nhật nhạc sĩ
+DELETE /api/musicians/{id}/ - Xóa nhạc sĩ
+POST /api/musicians/{id}/follow/ - Theo dõi nhạc sĩ
+POST /api/musicians/{id}/unfollow/ - Bỏ theo dõi nhạc sĩ
+GET /api/musicians/following/ - Lấy danh sách nhạc sĩ mà người dùng đang theo dõi
+
+API Album:
+GET /api/albums/ - Liệt kê tất cả album
+POST /api/albums/ - Tạo một album mới
+GET /api/albums/{id}/ - Lấy chi tiết album
+PUT /api/albums/{id}/ - Cập nhật album
+DELETE /api/albums/{id}/ - Xóa album
+
+API Bài hát:
+GET /api/songs/ - Liệt kê tất cả bài hát
+POST /api/songs/ - Tạo một bài hát mới
+GET /api/songs/{id}/ - Lấy chi tiết bài hát
+PUT /api/songs/{id}/ - Cập nhật bài hát
+DELETE /api/songs/{id}/ - Xóa bài hát
+GET /stream_song/{song_id}/ - Phát trực tuyến audio của bài hát
+GET /stream_video/{song_id}/ - Phát trực tuyến video của bài hát
+
+API Playlist:
+GET /api/playlists/ - Liệt kê tất cả playlist công khai
+POST /api/playlists/ - Tạo một playlist mới
+GET /api/playlists/{id}/ - Lấy chi tiết playlist
+PUT /api/playlists/{id}/ - Cập nhật playlist
+DELETE /api/playlists/{id}/ - Xóa playlist
+
+API Playlist Người dùng:
+GET /api/user-playlists/ - Liệt kê playlist của người dùng và các playlist công khai
+POST /api/user-playlists/ - Tạo một playlist mới cho người dùng
+GET /api/user-playlists/{id}/ - Lấy chi tiết playlist của người dùng
+PUT /api/user-playlists/{id}/ - Cập nhật playlist của người dùng
+DELETE /api/user-playlists/{id}/ - Xóa playlist của người dùng
+POST /api/user-playlists/{id}/add-song/ - Thêm bài hát vào playlist
+POST /api/user-playlists/{id}/remove-song/ - Xóa bài hát khỏi playlist
+
+API Bài hát Yêu thích:
+GET /api/favorite-songs/ - Liệt kê các bài hát yêu thích của người dùng
+POST /api/favorite-songs/ - Thêm bài hát vào danh sách yêu thích
+DELETE /api/favorite-songs/{id}/ - Xóa bài hát khỏi danh sách yêu thích
+POST /api/favorite-songs/toggle/ - Chuyển đổi trạng thái yêu thích của bài hát
+
+API Tài khoản Quản trị:
+GET /api/admin-accounts/ - Liệt kê tất cả tài khoản quản trị
+POST /api/admin-accounts/ - Tạo một tài khoản quản trị mới
+GET /api/admin-accounts/{id}/ - Lấy chi tiết tài khoản quản trị
+PUT /api/admin-accounts/{id}/ - Cập nhật tài khoản quản trị
+DELETE /api/admin-accounts/{id}/ - Xóa tài khoản quản trị
+
+API Tìm kiếm:
+GET /api/search/?q={query} - Tìm kiếm nhạc sĩ, album, bài hát và playlist
+Các Điểm Cuối API Xác thực Người dùng
+
+Đăng ký và Xác thực Người dùng:
+POST auth/register/ - Đăng ký người dùng mới
+POST auth/login/ - Đăng nhập người dùng
+POST auth/logout/ - Đăng xuất người dùng
+POST auth/token/ - Lấy token JWT
+POST auth/token/refresh/ - Làm mới token JWT
+POST auth/token/verify/ - Xác minh token JWT
+Hồ sơ Người dùng:
+GET auth/profile/ - Lấy thông tin hồ sơ người dùng
+PUT auth/profile/ - Cập nhật thông tin hồ sơ người dùng
+Theo dõi Người dùng:
+GET auth/followed-musicians/ - Lấy danh sách các nhạc sĩ mà người dùng đang theo dõi
