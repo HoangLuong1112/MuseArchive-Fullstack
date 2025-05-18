@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
 	const {login} = useAuth();
-	const [userName, setUserName] = useState<string>("");
+	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [error, setError] = useState<string>("");
 	const router = useRouter();
@@ -21,7 +21,7 @@ const LoginPage = () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ userName, password }),
+				body: JSON.stringify({ email, password }),
 			});
 
 			if (!response.ok) {
@@ -54,16 +54,15 @@ const LoginPage = () => {
 
 				<form onSubmit={handleSubmit}>
 					<div className="mb-4">
-						<label htmlFor="username" className="block text-white">Tên đăng nhập</label>
+						<label htmlFor="email" className="block text-white">Email đăng nhập</label>
 						<input
 							type="text"
-							id="username"
-							value={userName}
-							onChange={(e) => setUserName(e.target.value)}
+							id="email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
 							className="w-full p-3 mt-2 bg-[#333] text-white rounded-md"
 							placeholder="Nhập tên đăng nhập"
-							required
-						/>
+							required />
 					</div>
 
 					<div className="mb-6">
@@ -75,14 +74,10 @@ const LoginPage = () => {
 							onChange={(e) => setPassword(e.target.value)}
 							className="w-full p-3 mt-2 bg-[#333] text-white rounded-md"
 							placeholder="Nhập mật khẩu của bạn"
-							required
-						/>
+							required />
 					</div>
 
-					<button
-						type="submit"
-						className="w-full p-3 bg-[#1DB954] text-white rounded-md hover:bg-[#1ED760]"
-					>
+					<button type="submit" className="w-full p-3 bg-[#1DB954] text-white rounded-md hover:bg-[#1ED760]">
 						Đăng nhập
 					</button>
 				</form>

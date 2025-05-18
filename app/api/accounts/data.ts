@@ -1,7 +1,7 @@
 export const accounts = [
     {
         userName: 'user1',
-        password: '123123123',
+        password: '1',
         email: 'dragonstone289@gmail.com',
         gender: true,
         birthday: '2003-12-11',
@@ -12,7 +12,7 @@ export const accounts = [
     },
     {
         userName: 'user2',
-        password: '123123123',
+        password: '1',
         email: 'luonghaong2468@gmail.com',
         gender: true,
         birthday: '2003-12-11',
