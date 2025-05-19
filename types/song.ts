@@ -65,7 +65,7 @@ export type Musician = {
 
 export type Account = {
     userName: string;
-    password: string;
+    password: string;   //để xài cho đăng ký tài khoản thôi
     email: string;
     gender: boolean;
     birthday: string;

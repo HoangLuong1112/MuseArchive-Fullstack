@@ -3,6 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
+import { Account } from "@/types/song_final";
 
 const LoginPage = () => {
 	const {login} = useAuth();
@@ -15,28 +16,44 @@ const LoginPage = () => {
 		e.preventDefault();
 		setError("");
 
+		//	gọi dữ liệu từ API 
 		try {
-			const response = await fetch('/api/login', {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/login/`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ email, password }),
 			});
-
-			if (!response.ok) {
-				const data = await response.json();
-				throw new Error(data.error || "Đăng nhập thất bại");
-			}
+			
+			console.log('Request body:', JSON.stringify({ email, password }));
 
 			const data = await response.json();
-			if (response.ok && data.user) {
-				login(data.user); // <-- lưu thông tin user
+			console.log('Login: ', data);
+			
+			if (!response.ok) { throw new Error(data.error || "Đăng nhập thất bại");}
+			if (data.user) {
+
+				// Chỉnh lại dữ liệu từ json user trả về để gửi sang Context cho đúng type Account
+				const mappedUser: Account = {
+					userName: data.user.username,
+					password: '', 				// Không có trả pass, bỏ trống
+					email: data.user.email,
+					gender: data.user.gender,
+					birthday: data.user.birthday,
+					avatarPic: data.user.profile_image || '', //chừng nào sửa lại response rồi sửa
+
+					likedSong: [],         // Response chưa sửa, tạm để rỗng
+					followed: [],          // Response chưa sửa, tạm để rỗng
+					userPlaylist: [],      // Response chưa sửa, tạm để rỗng
+				};
+
+				login(mappedUser, data.tokens.access, data.tokens.refresh); 			// lưu thông tin user đăng nhập vào Context 
 				router.push('/');
 			} else {
 				setError(data.error || 'Lỗi đăng nhập');
 			}
-		} catch (err: unknown) {
+		} catch (err) {
 			if (err instanceof Error) {
 				setError(err.message);
 			} else {

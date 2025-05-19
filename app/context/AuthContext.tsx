@@ -1,45 +1,64 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Account } from '@/types/song';
+import { Account } from '@/types/song_final';
 
 type AuthContextType = {
     currentUser: Account | null;
-    login: (user: Account) => void;
+    login: (user: Account, access: string, refresh: string) => void;
     logout: () => void;
     setCurrentUser: React.Dispatch<React.SetStateAction<Account | null>>;
+    getAccessToken: () => string | null;
 };
+
 //Context để xác nhận tài khoản
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<Account | null>(null);
 
-    // Load từ localStorage khi mở lại trang
+    // Load user và token từ localStorage khi mở lại trang
     useEffect(() => {
-        const stored = localStorage.getItem('currentUser');
-        if (stored) setCurrentUser(JSON.parse(stored));
+        const storedUser = localStorage.getItem('currentUser');
+        const access = localStorage.getItem('accessToken');
+        const refresh = localStorage.getItem('refreshToken');
+
+        if (storedUser && access && refresh) 
+            setCurrentUser(JSON.parse(storedUser));
+        else
+            logout(); //nếu thiếu bất kỳ cái gì thì logout
     }, []);
 
     // Lưu vào localStorage khi có thay đổi
     useEffect(() => {
         if (currentUser) {
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
         } else {
-        localStorage.removeItem('currentUser');
+            localStorage.removeItem('currentUser');
         }
     }, [currentUser]);
 
-    const login = (user: Account) => {
+    const login = (user: Account, access: string, refresh: string) => {
         setCurrentUser(user);
+        // console.log('Token access receive: ', access);
+        // console.log('Token refresh receive: ', refresh);
+        localStorage.setItem('accessToken', access);
+        localStorage.setItem('refreshToken', refresh);
     };
 
     const logout = () => {
         setCurrentUser(null);
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
     };
 
+    const getAccessToken = () => {
+        return localStorage.getItem('accessToken');
+    }
+
     return (
-        <AuthContext.Provider value={{ currentUser, login, logout, setCurrentUser }}>
-        {children}
+        <AuthContext.Provider value={{ currentUser, login, logout, setCurrentUser, getAccessToken }}>
+            {children}
         </AuthContext.Provider>
     );
 };
