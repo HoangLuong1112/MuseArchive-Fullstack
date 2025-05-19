@@ -45,9 +45,9 @@ export type Playlist ={
 export type Musician = {
     id: string;
     musicianName: string;
-    avatarPic: string;  //ảnh avatar
-    coverPic?: string;  //ảnh bìa
-	follower?: number;
+    avatarPic: string;  
+    coverPic?: string;  
+	follower?: number;  
 	about?: string;
 	socialMedia?: {
         xLink?: string;

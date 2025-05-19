@@ -7,7 +7,7 @@ type AuthContextType = {
     login: (user: Account, access: string, refresh: string) => void;
     logout: () => void;
     setCurrentUser: React.Dispatch<React.SetStateAction<Account | null>>;
-    getAccessToken: () => string | null;
+    getAccessToken: () => Promise<string | null>;
 };
 
 //Context để xác nhận tài khoản
@@ -39,8 +39,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const login = (user: Account, access: string, refresh: string) => {
         setCurrentUser(user);
-        // console.log('Token access receive: ', access);
-        // console.log('Token refresh receive: ', refresh);
+        console.log('Token access receive: ', access);
+        console.log('Token refresh receive: ', refresh);
         localStorage.setItem('accessToken', access);
         localStorage.setItem('refreshToken', refresh);
     };
@@ -52,8 +52,47 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.removeItem('refreshToken');
     };
 
-    const getAccessToken = () => {
-        return localStorage.getItem('accessToken');
+    //lấy token và tự động refresh nếu hết hạn
+    const getAccessToken = async (): Promise<string | null> => {
+        const access = localStorage.getItem('accessToken');
+        const refresh = localStorage.getItem('refreshToken');
+
+        //rỗng thì logout
+        if (!access || !refresh) {
+            logout();
+            return null;
+        }
+
+        try {
+            //  1. Xác minh access token
+            const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/token/verify/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: access }),
+            });
+            if (verifyRes.ok)
+                return access;
+
+            //  2. Nếu access token hết hạn thì xài refresh
+            const refreshRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/token/refresh/`, {
+                method: 'POST',
+                headers: { 'Content-Type' : 'application/json' },
+                body: JSON.stringify({ refresh }),
+            });
+            if(!refreshRes.ok) {
+                logout();
+                return null;
+            }
+
+            const data = await refreshRes.json();
+            localStorage.setItem('accessToken', data.access);
+            return data.access;
+
+        } catch (error) {
+            console.error('Lỗi xác minh token: ', error);
+            logout();
+            return null;
+        }
     }
 
     return (

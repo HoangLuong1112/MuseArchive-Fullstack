@@ -2,7 +2,7 @@
 import AlbumPage from "./album/page";
 import MusicianPage from "./musician/page";
 import PlaylistPage from "./playlist/page";
-// import TrackPage from "./track/page";
+import TrackPage from "./track/page";
 
 export default function Home() {
 	return (
@@ -10,7 +10,7 @@ export default function Home() {
 			<PlaylistPage />
 			<AlbumPage />
 			<MusicianPage />
-			{/* <TrackPage />	 */}
+			<TrackPage />	
 		</div>
 	);
 }

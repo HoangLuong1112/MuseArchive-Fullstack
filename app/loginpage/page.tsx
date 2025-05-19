@@ -35,7 +35,7 @@ const LoginPage = () => {
 			if (data.user) {
 
 				// Chỉnh lại dữ liệu từ json user trả về để gửi sang Context cho đúng type Account
-				const mappedUser: Account = {
+				const sortedUser: Account = {
 					userName: data.user.username,
 					password: '', 				// Không có trả pass, bỏ trống
 					email: data.user.email,
@@ -48,7 +48,7 @@ const LoginPage = () => {
 					userPlaylist: [],      // Response chưa sửa, tạm để rỗng
 				};
 
-				login(mappedUser, data.tokens.access, data.tokens.refresh); 			// lưu thông tin user đăng nhập vào Context 
+				login(sortedUser, data.tokens.access, data.tokens.refresh); 			// lưu thông tin user đăng nhập vào Context 
 				router.push('/');
 			} else {
 				setError(data.error || 'Lỗi đăng nhập');

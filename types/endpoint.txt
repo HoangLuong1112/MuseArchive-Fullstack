@@ -66,6 +66,7 @@ POST auth/logout/ - Đăng xuất người dùng
 POST auth/token/ - Lấy token JWT
 POST auth/token/refresh/ - Làm mới token JWT
 POST auth/token/verify/ - Xác minh token JWT
+
 Hồ sơ Người dùng:
 GET auth/profile/ - Lấy thông tin hồ sơ người dùng
 PUT auth/profile/ - Cập nhật thông tin hồ sơ người dùng
