@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1,  Volume2 } from "lucide-react";
 import { usePlayer } from "../context/PlayerContext";
 import Image from "next/image";
+import { useAuth } from "../context/AuthContext";
 
 export default function MusicPlayer() {
     /* Trước đây MusicPlayer nhận prop song trực tiếp từ Props, nên khi 
@@ -19,6 +20,11 @@ export default function MusicPlayer() {
     const [volume, setVolume] = useState(100);              //trạng thái âm lượng (0=>100%)
     const [isShuffle, setIsShuffle] = useState(false);      // trạng thái Shuffle, khi true thì sẽ trộn bài ngẫu nhiên 
     const [repeatMode, setRepeatMode] = useState<0 | 1 | 2>(0);     // chế độ lặp lại. 0: none, 1: all, 2: one
+
+    //lấy token để lát gọi API
+    const { getAccessToken } = useAuth();
+    //dùng để tạo Url tạm cho <audio>
+    const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
     // hàm togglePlay để nhấn nút play/pause
     const togglePlay = () => {
@@ -93,17 +99,75 @@ export default function MusicPlayer() {
         const seconds = Math.floor(time % 60).toString().padStart(2, '0');
         return `${minutes}:${seconds}`;
     };
+
+    ///////////////////////
+
+    //lấy API bài hát ra
+    useEffect(() => {
+        const loadAudio = async () => {
+            if (!song?.id) return;
+            const token = await getAccessToken();
+            if (!token) return;
+
+            try{
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}stream_song/${song.id}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!res.ok) throw new Error("Không lấy đc stream song");
+
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                setAudioUrl(url);
+                setIsPlaying(true);
+                setProgress(0);
+            } catch (err) {
+                console.error("Lỗi khi load audio: ", err);
+            }
+        };
+        loadAudio();
+        return () => {
+            //clear URL cũ để tránh leak memory
+            if (audioUrl){
+                URL.revokeObjectURL(audioUrl);
+                setAudioUrl(null);
+            }
+        }
+    }, [song?.id, audioUrl]);
     
     //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
     useEffect(() => {
         const audio = audioRef.current;
-        if (audio && song?.audioSrc) {
+        // if (audio && song?.audioSrc) {
+        if (audio && audioUrl) {
+            audio.src = audioUrl;
             audio.load();
-            audio.play().catch(err => console.warn("Autoplay blocked", err));
-            setIsPlaying(true);
+
+            // audio.play().catch(err => console.warn("Autoplay blocked", err));
+            // setIsPlaying(true);
+            const tryPlay = () => {
+                audio.play()
+                    .then(() => setIsPlaying(true))
+                    .catch(err => {
+                    console.warn("Autoplay blocked:", err);
+                    setIsPlaying(false); // Cho phép user click
+                    });
+            };
+
+            if (audio.readyState >= 3) {
+                tryPlay();
+            } else {
+                audio.oncanplay = tryPlay;
+            }
             setProgress(0); // reset thanh tiến trình
         }
     }, [song?.audioSrc]);
+
+    
 
     //khi shuffle thì ko có lặp bài
     useEffect(() => {
@@ -113,14 +177,13 @@ export default function MusicPlayer() {
 
     // chưa có bài nào được chọn thì không render player
     if (!song) return null;
-
     
     return (
         <div className="fixed bottom-0 left-0 w-full h-[80px] bg-zinc-900 text-white flex items-center justify-between px-6 shadow-xl z-50">
             
             {/* Left: Song Info */}
             <div className="flex items-center gap-4 w-50">
-                <Image src={song.albumArt} alt="Album Art" width={48} height={48} className="rounded-md object-cover" />
+                <Image src={song.albumArt} alt="Album Art" width={48} height={48} className="w-[48px] h-[48px] rounded-md object-cover" />
                 <div>
                     <h4 className="text-sm font-semibold">{song.title}</h4>
                     <p className="text-xs text-zinc-400">{song.artist.name}</p>
@@ -170,7 +233,8 @@ export default function MusicPlayer() {
 
             <audio 
                 ref={audioRef} 
-                src={song.audioSrc} 
+                // src={song.audioSrc} 
+                src={audioUrl ?? undefined}
                 onTimeUpdate={handleTimeUpdate} 
                 onEnded={handleEnded}
                 onLoadedMetadata={() => {

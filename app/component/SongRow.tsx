@@ -6,7 +6,7 @@ import { usePlayer } from '../context/PlayerContext'
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '../context/AuthContext'
-import { playlists } from '../api/playlists/data'
+// import { playlists } from '../api/playlists/data'
 
 interface SongRowProps {
 	song: SongProps
@@ -31,6 +31,7 @@ export default function SongRow({ song, index, songlist }: SongRowProps) {
 	const isLiked = currentUser?.likedSong?.includes(song.id)
 	const isCurrent = currentSong?.title === song.title
 
+	console.log('xxxx: ', showOptions)
 	// Đóng khi click ra ngoài
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -65,33 +66,33 @@ export default function SongRow({ song, index, songlist }: SongRowProps) {
 	}
 
 	// XỬ LÝ THÊM XÓA BÀI HÁT
-	const userPlaylists = playlists.filter(p =>
-		currentUser?.userPlaylist.includes(p.id)
-	);
+	// const userPlaylists = playlists.filter(p =>
+	// 	currentUser?.userPlaylist.includes(p.id)
+	// );
 
 	// Kiểm tra bài hát có trong playlist chưa
-	const isSongInPlaylist = (playlistId: string) => {
-		const playlist = playlists.find(p => p.id === playlistId);
-		return playlist?.songList?.includes(song.id);
-	};
+	// const isSongInPlaylist = (playlistId: string) => {
+	// 	const playlist = playlists.find(p => p.id === playlistId);
+	// 	return playlist?.songList?.includes(song.id);
+	// };
 
-	const handleToggleSongInPlaylist = (playlistId: string) => {
-		const playlist = playlists.find(p => p.id === playlistId);
-		if (!playlist) return;
+	// const handleToggleSongInPlaylist = (playlistId: string) => {
+	// 	const playlist = playlists.find(p => p.id === playlistId);
+	// 	if (!playlist) return;
 
-		if (!playlist.songList) playlist.songList = [];
+	// 	if (!playlist.songList) playlist.songList = [];
 
-		const songExists = playlist.songList.includes(song.id);
+	// 	const songExists = playlist.songList.includes(song.id);
 
-		if (songExists) {
-			playlist.songList = playlist.songList.filter(id => id !== song.id);
-		} else {
-			playlist.songList.push(song.id);
-		}
+	// 	if (songExists) {
+	// 		playlist.songList = playlist.songList.filter(id => id !== song.id);
+	// 	} else {
+	// 		playlist.songList.push(song.id);
+	// 	}
 
-		// Cập nhật lại currentUser nếu cần
-		setCurrentUser({ ...currentUser! });
-	};
+	// 	// Cập nhật lại currentUser nếu cần
+	// 	setCurrentUser({ ...currentUser! });
+	// };
 
 	const handleContextMenu = (e: React.MouseEvent) => {
 		e.stopPropagation()
@@ -133,7 +134,7 @@ export default function SongRow({ song, index, songlist }: SongRowProps) {
 					title="More options"
 					className="text-gray-400 hover:text-white">
 					<FaEllipsisH />
-					{showOptions && (
+					{/* {showOptions && (
 						<div ref={menuRef} className="absolute z-50 bg-zinc-800 border border-zinc-700 rounded shadow-md p-2 right-5 mt-1 w-64">
 							<div className="text-white font-semibold mb-2">Thêm vào Playlist</div>
 							{userPlaylists.length === 0 && (
@@ -149,7 +150,7 @@ export default function SongRow({ song, index, songlist }: SongRowProps) {
 								);
 							})}
 						</div>
-					)}
+					)} */}
 				</button>
 			</div>
 		</div>

@@ -8,6 +8,7 @@ export default function SignUpPage() {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
+        password_confirm: '',
         email: '',
         gender: true,
         birthday: '',
@@ -31,14 +32,15 @@ export default function SignUpPage() {
 		setSuccess('');
 
 		try {
-			const res = await fetch('/api/register', {
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/register/`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					userName: formData.username,
+					username: formData.username,
 					password: formData.password,
+                    password_confirm: formData.password_confirm,
 					email: formData.email,
 					gender: formData.gender,
 					birthday: formData.birthday
@@ -107,6 +109,19 @@ export default function SignUpPage() {
                             onChange={handleChange}
                             className="w-full p-3 mt-1 bg-[#333] text-white rounded-md"
                             placeholder="Nhập mật khẩu"
+                            required
+                        />
+                    </div>
+
+                     <div>
+                        <label className="text-white block">Nhập lại mật khẩu</label>
+                        <input
+                            name="password_confirm"
+                            type="password"
+                            value={formData.password_confirm}
+                            onChange={handleChange}
+                            className="w-full p-3 mt-1 bg-[#333] text-white rounded-md"
+                            placeholder="Nhập lại mật khẩu"
                             required
                         />
                     </div>

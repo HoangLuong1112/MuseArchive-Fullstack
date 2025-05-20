@@ -12,6 +12,7 @@ export default function TrackDetail() {
     const { id } = useParams()          //Dùng useParams() để lấy id từ URL: ví dụ /playlist/1 → id = '1'
     const { getAccessToken } = useAuth()
     const [track, setTrack] = useState<SongProps | null>(null)
+    const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
     // useEffect(() => {
     //     fetch(`/api/tracks/${id}`)
@@ -20,6 +21,7 @@ export default function TrackDetail() {
     // }, [id])
 
     useEffect(() => {
+        //lấy dữ liệu bài hát
         const fetchTrack = async () => {
             const token = await getAccessToken();
             if (!token) {
@@ -48,18 +50,18 @@ export default function TrackDetail() {
                     id: data.id,
                     title: data.title,
                     artist: {
-                        id: '',
-                        name: 'null',
+                        id: data.musicians[0].id,
+                        name: data.musicians[0].musician_name,
                     },
                     albumArt: data.albumArt,
                     audioSrc: '',
                     duration: data.duration,
 
-                    dayAdd: 'null',
-                    views: 111,
+                    dayAdd: data.day_add,
+                    views: data.views,
                     album: {
-                        id: '',
-                        name: 'null',
+                        id: data.album.id,
+                        name: data.album.album_name,
                     },
                     videoSrc: '',
                 }
@@ -69,8 +71,37 @@ export default function TrackDetail() {
                 console.error('Error fetching musicians: ', err);
             }
         };
+
         fetchTrack();
     }, [getAccessToken, id])
+
+    useEffect(() => {
+        const fetchVideo = async () => {
+            if (!id) return;
+            const token = await getAccessToken();
+            if (!token) return;
+
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}stream_video/${id}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!res.ok) throw new Error("Không lấy đc stream video");
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                setVideoUrl(url);
+                // console.log("Video URL:", url);
+            } catch (err) {
+                console.error("Lỗi khi load video: ", err);
+            }
+        };
+
+        fetchVideo();
+    }, [getAccessToken, id]);
 
 
     // hàm đổi thời gian ra đơn vị
@@ -89,8 +120,8 @@ export default function TrackDetail() {
             <Banner type='Bài hát' coverUrl={track.albumArt} name={track.title} musician={track.artist} 
                 album={track.album} dayAdd={track.dayAdd} numberofsong={1} duration={totalDurationString} views={track.views} />
             <SongList songlist={[track]}/>
-            {track.videoSrc && (
-                <VideoPlayer videoSrc={track.videoSrc} />
+            {videoUrl && (
+                <VideoPlayer videoSrc={videoUrl} />
             )}
         </div>
     )

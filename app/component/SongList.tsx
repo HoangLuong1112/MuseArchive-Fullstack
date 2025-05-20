@@ -8,6 +8,7 @@ interface SongListProps {
 }
 
 export default function SongList({ songlist }: SongListProps) {
+    // console.log("Bài hát chuẩn bị truyền vô list: ", songlist);
     return (
         <div className="mt-4 mb-8 px-5">
             <div className="grid grid-cols-12 gap-4 px-5 text-gray-400 text-sm border-b border-gray-800 pb-2 mb-4">
