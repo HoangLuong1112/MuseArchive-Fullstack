@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Musician } from '@/types/song'
+import { Musician } from '@/types/song_final'
 import Image from 'next/image'
 import { BsFillPeopleFill } from 'react-icons/bs'
 import { FaCheck, FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'
@@ -10,20 +10,71 @@ import SongList from '@/app/component/SongList'
 import Carousel from '@/app/component/Carousel'
 import AlbumCard from '@/app/component/AlbumCard'
 import Link from 'next/link'
+import { useAuth } from '@/app/context/AuthContext'
 // import SongList from '@/app/component/SongList'
-
 
 export default function MusicianDetail() {
     const { id } = useParams();           //Dùng useParams() để lấy id từ URL: ví dụ /playlist/1 → id = '1'
+    const { getAccessToken } = useAuth();
     const [musician, setMusician] = useState<Musician | null>(null);
     const [activeTab, setActiveTab] = useState<'popular' | 'albums'>('popular');
     const [isFollowing, setIsFollowing] = useState(false);
 
+    // useEffect(() => {
+    //     fetch(`/api/musicians/${id}`)
+    //     .then(res => res.json())
+    //     .then(data => setMusician(data))
+    // }, [id])
     useEffect(() => {
-        fetch(`/api/musicians/${id}`)
-        .then(res => res.json())
-        .then(data => setMusician(data))
-    }, [id])
+        const fetchMusicianDetail = async () => {
+            const token = await getAccessToken();
+            if (!token) {
+                console.warn('Không tìm thấy access token');
+                return;
+            }
+
+            try {
+                //lấy thông tin chi tiết nhạc sĩ
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/musicians/${id}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+                if(!res.ok) {
+                    console.error('Failed to fetch musician detail');
+                    return;
+                }
+                const data = await res.json();
+                console.log('Chi tiết nhạc sĩ: ', data);
+
+                //chuyển đổi sang type Musician
+                const formattedData: Musician = {
+                    id: data.id,
+                    musicianName: data.musician_name,
+                    avatarPic: data.avatar_pic,
+                    coverPic: data.cover_pic,
+                    follower: data.number_of_follower,
+                    about: data.about,
+                    socialMedia: {
+                        xLink: data.social_media.xLink,
+                        faceLink: data.social_media.faceLink,
+                        instaLink: data.social_media.instaLink,
+                        youtubeLink: data.social_media.youtubeLink, 
+                    }, 
+                    isVerified: data.is_verified,
+                    topSongs: [],
+                    albums: [],
+                }
+                
+                setMusician(formattedData);
+            } catch (err) {
+                console.error('Error fetching musicians: ', err);
+            }
+        };
+        fetchMusicianDetail();
+    }, [getAccessToken, id])
 
     // hàm theo dõi, làm tạm cập nhập follower
     const toggleFollow = () => {

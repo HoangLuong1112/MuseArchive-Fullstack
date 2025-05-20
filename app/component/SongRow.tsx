@@ -1,6 +1,6 @@
 'use client'
 
-import { SongProps } from '@/types/song'
+import { SongProps } from '@/types/song_final'
 import { FaHeart, FaRegHeart, FaEllipsisH } from 'react-icons/fa'
 import { usePlayer } from '../context/PlayerContext'
 import { useEffect, useRef, useState } from 'react'

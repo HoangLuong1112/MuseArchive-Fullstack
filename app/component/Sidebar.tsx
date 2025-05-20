@@ -11,28 +11,42 @@ import CreatePlaylistModal from './CreatePlaylistModal';
 const MIN_WIDTH = 90;
 const MAX_WIDTH = 300;
 
+type SidebarPlaylist = {
+	id: string;
+	playlist_name: string;
+	cover_image: string;
+	// user_id: string;
+}
+
 const Sidebar = () => {
 	const {currentUser} = useAuth();
+	const { getAccessToken } = useAuth();
 	const [sidebarWidth, setSidebarWidth] = useState(250);
 	const isResizing = useRef(false);
 	const isCollapsed = sidebarWidth <= 90;
 	const [showMenu, setShowMenu] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 
+	const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
+	
+
+
 	//hàm lọc các playlist ra
-	const userPlaylists = playlists.filter(p =>
-		currentUser?.userPlaylist.includes(p.id)
-	);
+	// const userPlaylists = playlists.filter(p =>
+	// 	currentUser?.userPlaylist.includes(p.id)
+	// );
+
+	//đang bị lỗi, chưa sửa
 	const handleCreate = (newPlaylist: Playlist) => {
 		const normalizedPlaylist = {
-		id: newPlaylist.id,
-		playlistName: newPlaylist.playlistName,
-		coverUrl: newPlaylist.coverUrl,
-		description: newPlaylist.description || '',
-		createdby: newPlaylist.createdby || 'unknown',
-		dayAdd: newPlaylist.dayAdd || new Date().toISOString(),
-		songList: newPlaylist.songList || []
-	};
+			id: newPlaylist.id,
+			playlistName: newPlaylist.playlistName,
+			coverUrl: newPlaylist.coverUrl,
+			description: newPlaylist.description || '',
+			createdby: newPlaylist.createdby || 'unknown',
+			dayAdd: newPlaylist.dayAdd || new Date().toISOString(),
+			songList: newPlaylist.songList || []
+		};
 		playlists.push(normalizedPlaylist);
 		alert('🎉 Playlist đã được tạo!');
 		setShowModal(false);
@@ -45,18 +59,18 @@ const Sidebar = () => {
 		const startWidth = sidebarWidth;
 
 		const onMouseMove = (moveEvent: MouseEvent) => {
-		if (!isResizing.current) return;
-		const newWidth = Math.max(
-			MIN_WIDTH,
-			Math.min(MAX_WIDTH, startWidth + (moveEvent.clientX - startX))
-		);
-		setSidebarWidth(newWidth);
+			if (!isResizing.current) return;
+			const newWidth = Math.max(
+				MIN_WIDTH,
+				Math.min(MAX_WIDTH, startWidth + (moveEvent.clientX - startX))
+			);
+			setSidebarWidth(newWidth);
 		};
 
 		const stopResizing = () => {
-		isResizing.current = false;
-		document.removeEventListener('mousemove', onMouseMove);
-		document.removeEventListener('mouseup', stopResizing);
+			isResizing.current = false;
+			document.removeEventListener('mousemove', onMouseMove);
+			document.removeEventListener('mouseup', stopResizing);
 		};
 
 		document.addEventListener('mousemove', onMouseMove);
@@ -67,14 +81,51 @@ const Sidebar = () => {
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-		if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-			setShowMenu(false);
-		}
+			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+				setShowMenu(false);
+			}
 		};
 
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
+
+	useEffect(() => {
+		const fetchUserPlaylists = async () => {
+			if (!currentUser) return;
+
+			try {
+			const token = await getAccessToken?.();
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/user-playlists/`, {
+				headers: {
+				'Authorization': `Bearer ${token}`,
+				'Content-Type': 'application/json',
+				},
+			});
+
+			if (!res.ok) {
+				console.error('Failed to fetch playlists');
+				return;
+			}
+
+			const data = await res.json();
+			console.log('Playlist của người dùng: ', data);
+
+			// Nếu cần map lại field cho đúng type Playlist
+			const formattedPlaylists: Playlist[] = data.map((item: SidebarPlaylist) => ({
+				id: item.id,
+				playlistName: item.playlist_name,
+				coverUrl: item.cover_image,
+			}));
+
+			setUserPlaylists(formattedPlaylists);
+			} catch (err) {
+			console.error('Error fetching playlists:', err);
+			}
+		};
+
+		fetchUserPlaylists();
+	}, [currentUser, getAccessToken]);
 
 	return (
 		<div className="relative h-full flex">
@@ -83,12 +134,10 @@ const Sidebar = () => {
 				{/* === Top Bar === */}
 				{!isCollapsed ? (
 				<div className="flex items-center justify-between mb-4">
+
 					{/* Nút tạo playlist mới */}
 					<div className="relative" ref={menuRef}>
-						<button
-							onClick={() => setShowMenu(prev => !prev)}
-							className="p-2 rounded hover:bg-gray-700 cursor-pointer"
-							title="Thêm">
+						<button title="Thêm" onClick={() => setShowMenu(prev => !prev)} className="p-2 rounded hover:bg-gray-700 cursor-pointer">
 							<Plus size={20} />
 						</button>
 
@@ -99,8 +148,7 @@ const Sidebar = () => {
 									onClick={() => {
 										setShowModal(true);
 										setShowMenu(false);
-									}}
-									className="w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer">
+									}} className="w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer">
 									Tạo Playlist
 								</button>
 							</div>
@@ -116,7 +164,7 @@ const Sidebar = () => {
 						${isCollapsed ? 'hover:bg-gray-600' : 'hover:bg-gray-700'} 
 						text-white cursor-pointer`}
 						title={isCollapsed ? 'Mở rộng' : 'Thu gọn'}>
-						{isCollapsed ? <ChevronRight size={30} /> : <ChevronLeft size={30} />}
+							{isCollapsed ? <ChevronRight size={30} /> : <ChevronLeft size={30} />}
 					</button>
 				</div>
 				) : 

@@ -82,6 +82,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             if(!refreshRes.ok) {
                 logout();
                 return null;
+            } else {
+                console.log('JUST REFRESH TOKEN');
             }
 
             const data = await refreshRes.json();

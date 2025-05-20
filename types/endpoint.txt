@@ -57,6 +57,8 @@ DELETE /api/admin-accounts/{id}/ - Xóa tài khoản quản trị
 
 API Tìm kiếm:
 GET /api/search/?q={query} - Tìm kiếm nhạc sĩ, album, bài hát và playlist
+
+
 Các Điểm Cuối API Xác thực Người dùng
 
 Đăng ký và Xác thực Người dùng:

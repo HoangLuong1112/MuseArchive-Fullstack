@@ -25,14 +25,8 @@ export default function Banner({type, coverUrl, name, description, musician, cre
     const year= dayAdd?.split('-')[0];
 
     return(
-        <div className='flex gap-5 p-5 h-[300px]' 
-            style={{
-                backgroundImage: `url('${coverUrl}')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-            }}>
-            <Image src={coverUrl} alt='Cover' height={350} width={350} className='rounded-2xl' />
+        <div className='bg-gradient-to-r from-blue-600 to-green-400 hover:from-green-400 hover:to-blue-600 transition flex gap-5 p-5 h-[300px] rounded-2xl'>
+            <Image src={coverUrl} alt='Cover' height={350} width={350} className='h-[260px] w-[260px] rounded-2xl object-cover' />
             <div className='w-full h-full bottom-0 flex flex-col gap-3 justify-end'>
                 <p>{type}</p>
                 <p className="title">{name}</p>

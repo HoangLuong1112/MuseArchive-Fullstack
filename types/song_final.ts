@@ -6,7 +6,7 @@ export type SongProps = {
         name: string;
     };
     albumArt: string;
-    audioSrc: File; //audioSrc: string;
+    audioSrc: string;
     duration?: number;
 
     dayAdd: string; //yyyy-mm-dd 
@@ -15,7 +15,7 @@ export type SongProps = {
         id: string;
         name: string;
     };
-    videoSrc: File;//videoSrc: string;
+    videoSrc: string;
     // các bài hát đơn ko có album gọi là track
 };
 

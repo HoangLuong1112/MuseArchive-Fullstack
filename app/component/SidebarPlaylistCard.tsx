@@ -28,7 +28,7 @@ const SidebarPlaylistCard: React.FC<SidebarPlaylistCardProps> = ({ playlist, col
                 {!collapsed && (
                     <div className="flex flex-col">
                         <span className="text-sm truncate">{playlist.playlistName}</span>
-                        <span className="text-xs text-gray-400 truncate">{playlist.createdby}</span>
+                        {/* <span className="text-xs text-gray-400 truncate">{playlist.createdby}</span> */}
                     </div>
                 )}
             </div>
