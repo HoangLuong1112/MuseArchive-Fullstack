@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Home, Search, ChevronDown } from 'lucide-react';
+import { Home, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useAuth } from '@/app/context/AuthContext'; // ⬅ Thêm dòng này
+import { useAuth } from '@/app/context/AuthContext'; 
+import SearchBar from './SearchBar';
 
 const NavBar: React.FC = () => {
     const [showMenu, setShowMenu] = useState(false);
@@ -40,14 +41,11 @@ const NavBar: React.FC = () => {
                     </button>
                 </Link>
 
-                <div className="flex items-center bg-neutral-800 px-3 py-1.5 rounded-full w-full max-w-md hover:bg-neutral-700 transition">
+                {/* <div className="flex items-center bg-neutral-800 px-3 py-1.5 rounded-full w-full max-w-md hover:bg-neutral-700 transition">
                     <Search size={18} className="text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Tìm kiếm bài hát, nghệ sĩ..."
-                        className="bg-transparent outline-none text-sm text-white ml-2 w-full placeholder-gray-400"
-                    />
-                </div>
+                    <input type="text" placeholder="Tìm kiếm bài hát, nghệ sĩ..." className="bg-transparent outline-none text-sm text-white ml-2 w-full placeholder-gray-400"/>
+                </div> */}
+                <SearchBar />
             </div>
 
             {/* Right: Notification + User */}

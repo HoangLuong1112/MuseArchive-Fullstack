@@ -201,15 +201,15 @@ const Sidebar = () => {
 			<div onMouseDown={startResizing} className="w-1 h-full  cursor-ew-resize" style={{ position: 'relative', zIndex: 0 }}/>
 		
 			{showModal && (
-			<div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-60">
-				<div className="relative bg-black">
-					<CreatePlaylistModal />
-					<button onClick={() => setShowModal(false)} className="absolute top-2 right-2 text-white text-xl hover:text-red-400">
-						<XIcon size={30} />
-					</button>
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-60">
+					<div className="relative bg-black">
+						<CreatePlaylistModal />
+						<button onClick={() => setShowModal(false)} className="absolute top-2 right-2 text-white text-xl hover:text-red-400">
+							<XIcon size={30} />
+						</button>
+					</div>
 				</div>
-			</div>
-)}
+			)}
 		</div>
 	);
 };

@@ -76,13 +76,13 @@ const SidebarPlaylistCard: React.FC<SidebarPlaylistCardProps> = ({ playlist, col
             </Link>
 
             {/* Dấu 3 chấm bắt đầu từ đây */}
-            <div className="absolute top-1/2 right-3 -translate-y-1/2" ref={menuRef}>
-				<button onClick={() => setShowMenu(prev => !prev)} className="hover:text-gray-300">
-					<MoreVertical size={18} />
+            <div className="absolute z-10 top-1/2 right-3 -translate-y-1/2" ref={menuRef}>
+				<button onClick={() => setShowMenu(prev => !prev)} >
+					<MoreVertical size={18}/>
 				</button>
 
 				{showMenu && (
-					<div className="absolute right-0 top-8 bg-zinc-800 border border-gray-600 rounded shadow-lg z-50 w-40 text-sm">
+					<div className="absolute z-60 right-0 top-8 bg-zinc-800 border border-gray-600 rounded shadow-lg w-40 text-sm">
 						<button onClick={() => { setShowEditModal(true); setShowMenu(false); }} className="w-full px-4 py-2 hover:bg-zinc-700 text-left">Sửa Playlist</button>
 						<button onClick={() => { handleDelete(); setShowMenu(false); }} className="w-full px-4 py-2 text-red-400 hover:bg-zinc-700 text-left">Xóa Playlist</button>
 					</div>
