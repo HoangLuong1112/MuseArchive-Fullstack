@@ -2,28 +2,34 @@ from django.db import models
 from django.conf import settings
 from django_mongodb_backend.fields import EmbeddedModelField, ArrayField
 from django_mongodb_backend.models import EmbeddedModel
+from django_mongodb_backend.fields import ObjectIdAutoField
 
-# Create your models here.
 class Musician(models.Model):
     musician_name = models.CharField(max_length=255)
     number_of_follower = models.IntegerField(default=0)
-    introduce = models.TextField(blank=True)
-
+    about = models.TextField(blank=True)
+    is_followed = models.BooleanField(default=False)
     # Dạng dictionary chứa các link mạng xã hội
     social_media = models.JSONField(default=dict, blank=True)
+    is_verified = models.BooleanField(default=True)
+    avatar_pic = models.ImageField(upload_to='musician_avatar/')
+    cover_pic = models.ImageField(upload_to='musician_cover/')
 
     class Meta:
         db_table = "musician"
         managed = False
 
     def __str__(self):
+        if self.musician_name is None:
+            return "Musician name is None"
         return self.musician_name
 
 class Album(models.Model):
     album_name = models.CharField(max_length=255)
-
-    musicians = models.ManyToManyField(Musician, blank=True, null=True)
-
+    coverurl = models.ImageField(upload_to='album_pictures/')
+    musicians = models.ManyToManyField(Musician, blank=True)
+    day_add = models.DateField()
+    
     class Meta:
         db_table = "album"
         managed = False
@@ -32,12 +38,12 @@ class Album(models.Model):
         return self.album_name
 
 class Song(models.Model):
-    song_name = models.CharField(max_length=255)
-
-    song_picture = models.FileField(upload_to='song_pictures/')
+    title = models.CharField(max_length=255)
+    duration = models.IntegerField(default=0)
+    albumArt = models.ImageField(upload_to='song_pictures/')
     song_file = models.FileField(upload_to='song_files/')
-
-    musicians = models.ManyToManyField(Musician, blank=True, null=True)
+    video_file = models.FileField(upload_to='video_files/', blank=True)
+    musicians = models.ManyToManyField(Musician, blank=True)
 
     day_add = models.DateField()
     views = models.IntegerField(default=0)  
@@ -50,13 +56,24 @@ class Song(models.Model):
         managed = False
 
     def __str__(self):
-        return self.song_name
+        if self.title is None:
+            return "Song title is None"
+        return self.title
 
 class Playlist(models.Model):
     playlist_name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
 
-    musicians = models.ManyToManyField(Musician, blank=True, null=True)
-    songs = models.ManyToManyField(Song, blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, 
+                            related_name='playlists', null=True, blank=True)
+    is_public = models.BooleanField(default=True)
+    cover_image = models.ImageField(upload_to='playlist_covers/', null=True, blank=True)
+    
+    musicians = models.ManyToManyField(Musician, blank=True)
+    songs = models.ManyToManyField(Song, blank=True)
 
     class Meta:
         db_table = "playlist"
@@ -65,19 +82,33 @@ class Playlist(models.Model):
     def __str__(self):
         return self.playlist_name
 
-class Account(models.Model):
-    user_name = models.CharField(max_length=255)
-    email = models.EmailField()
-    gender = models.BooleanField()  # True: Nam, False: Nữ
-    birthday = models.DateField()
-    region = models.CharField(max_length=100)
+class UserFavorite(models.Model):
+    id = ObjectIdAutoField(primary_key=True)  # Add this line
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorites')
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='favorited_by')
+    favorited_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = "account"
+        db_table = "user_favorites"
+        managed = False
+        unique_together = ('user', 'song')  
+
+    def __str__(self):
+        return f"{self.user.username}'s favorite: {self.song.title}"
+
+class Account(models.Model):
+    username = models.CharField(max_length=255)
+    email = models.EmailField()
+    gender = models.BooleanField()  # True: Male, False: Female
+    birthday = models.DateField()
+    role = models.CharField(max_length=50, default="staff")  # e.g., admin, staff, manager
+    date_joined = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "admin_account"
         managed = False
 
     def __str__(self):
-        return self.user_name
-
+        return self.username
 
 
