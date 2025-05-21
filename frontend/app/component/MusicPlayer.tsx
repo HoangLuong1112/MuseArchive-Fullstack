@@ -1,27 +1,30 @@
 'use client';
 import { useRef, useState, useEffect } from "react";
 import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1,  Volume2 } from "lucide-react";
+import { usePlayer } from "../context/PlayerContext";
+import Image from "next/image";
+import { useAuth } from "../context/AuthContext";
 
-
-//import kiểu dữ liệu bài hát SongProps từ Playlist.tsx để truyền vô MusicPlayer
-export type SongProps = {
-    title: string;
-    artist: string;
-    albumArt: string;
-    audioSrc: string;
-};
-type Props = {
-    song: SongProps;
-}
-
-export default function MusicPlayer({ song }: Props) {
-    // 🔧 Khai báo kiểu rõ ràng cho ref
+export default function MusicPlayer() {
+    /* Trước đây MusicPlayer nhận prop song trực tiếp từ Props, nên khi 
+    chuyển qua xài Context để quản lý bài hát, bạn sẽ không truyền song hay type của song nữa nữa, 
+    mà sẽ lấy currentSong từ usePlayer(). 
+    Trong app chỉ có một nơi quản lý bài hát đang phát – đó là PlayerContext. */
+    const {currentSong: song, playNext, playPrev } = usePlayer(); // ==> Lấy bài hát đang phát
+    
+    // Khai báo kiểu rõ ràng cho ref
     const audioRef = useRef<HTMLAudioElement | null>(null); //trỏ tới thẻ <audio>, dùng để play/pause, lấy duration, currentTime, volume
     const [isPlaying, setIsPlaying] = useState(false);      //trạng thái nhạc đang chạy hay tạm dừng.
     const [progress, setProgress] = useState(0);            //trạng thái tiến trình bài hát (0=>100%)
+    const [duration, setDuration] = useState(0);            //đếm giờ trên thanh 
     const [volume, setVolume] = useState(100);              //trạng thái âm lượng (0=>100%)
     const [isShuffle, setIsShuffle] = useState(false);      // trạng thái Shuffle, khi true thì sẽ trộn bài ngẫu nhiên 
     const [repeatMode, setRepeatMode] = useState<0 | 1 | 2>(0);     // chế độ lặp lại. 0: none, 1: all, 2: one
+
+    //lấy token để lát gọi API
+    const { getAccessToken } = useAuth();
+    //dùng để tạo Url tạm cho <audio>
+    const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
     // hàm togglePlay để nhấn nút play/pause
     const togglePlay = () => {
@@ -69,42 +72,121 @@ export default function MusicPlayer({ song }: Props) {
     // handleEnded: xử lý khi kết thúc bài hát
     const handleEnded = () => {
         const audio = audioRef.current;
-        if (!audio) return; //nếu ko có audio thì thoát
-        //kiểm tra các chế độ lặp lại
-        if (repeatMode === 2) {     // lặp lại 1 bài hát liên tục
-            audio.currentTime = 0;  //đặt lại thời gian bài hát về đầu bài
-            audio.play();           //rồi phát bài hát
+        if (!audio) return;
+        
+        //Check các chế độ lặp lại
+            //Mode 2: lặp lại 1 bài hát liên tục
+        if (repeatMode === 2) {         
+            //đặt lại tiến độ bài hát về đầu bài rồi chạy bài           
+            audio.currentTime = 0;      
+            audio.play();    
+            return;           
         } 
-        else if (repeatMode === 1) {  //lặp lại tất cả bài hát khi có ds bài hát
-            audio.currentTime = 0;
-            audio.play();
-        } 
-        else { // No Repeat
-            setIsPlaying(false);
-        }
+        // 2 Mode còn lại xử lý bên PlayerContext cho dễ
+        playNext(repeatMode, isShuffle);
     };
-    //testings
 
+    const handleNext = () =>{
+        playNext();
+    }
+    const handlePrev = () => {
+        playPrev();
+    }
+
+    //hàm chuyển thời gian bài hát ra định dạng phút giây
+    const formatTime = (time: number) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+        return `${minutes}:${seconds}`;
+    };
+
+    ///////////////////////
+
+    //lấy API bài hát ra
+    useEffect(() => {
+        const loadAudio = async () => {
+            if (!song?.id) return;
+            const token = await getAccessToken();
+            if (!token) return;
+
+            try{
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}stream_song/${song.id}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!res.ok) throw new Error("Không lấy đc stream song");
+
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                setAudioUrl(url);
+                setIsPlaying(true);
+                setProgress(0);
+            } catch (err) {
+                console.error("Lỗi khi load audio: ", err);
+            }
+        };
+        loadAudio();
+        return () => {
+            //clear URL cũ để tránh leak memory
+            if (audioUrl){
+                URL.revokeObjectURL(audioUrl);
+                setAudioUrl(null);
+            }
+        }
+    }, [song?.id, audioUrl, getAccessToken]);
+    
     //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
     useEffect(() => {
         const audio = audioRef.current;
-        if (audio && song.audioSrc) {
+        // if (audio && song?.audioSrc) {
+        if (audio && audioUrl) {
+            audio.src = audioUrl;
             audio.load();
-            audio.play().catch(err => console.warn("Autoplay blocked", err));
-            setIsPlaying(true);
+
+            // audio.play().catch(err => console.warn("Autoplay blocked", err));
+            // setIsPlaying(true);
+            const tryPlay = () => {
+                audio.play()
+                    .then(() => setIsPlaying(true))
+                    .catch(err => {
+                    console.warn("Autoplay blocked:", err);
+                    setIsPlaying(false); // Cho phép user click
+                    });
+            };
+
+            if (audio.readyState >= 3) {
+                tryPlay();
+            } else {
+                audio.oncanplay = tryPlay;
+            }
             setProgress(0); // reset thanh tiến trình
         }
-    }, [song.audioSrc]);
+    }, [song?.audioSrc, audioUrl]);
+
+    
+
+    //khi shuffle thì ko có lặp bài
+    useEffect(() => {
+        if(isShuffle)
+            setRepeatMode(0);
+    }, [isShuffle])
+
+    // chưa có bài nào được chọn thì không render player
+    if (!song) return null;
     
     return (
         <div className="fixed bottom-0 left-0 w-full h-[80px] bg-zinc-900 text-white flex items-center justify-between px-6 shadow-xl z-50">
             
             {/* Left: Song Info */}
             <div className="flex items-center gap-4 w-50">
-                <img src={song.albumArt} alt="Album Art" className="w-12 h-12 rounded-md object-cover" />
+                <Image src={song.albumArt} alt="Album Art" width={48} height={48} className="w-[48px] h-[48px] rounded-md object-cover" />
                 <div>
                     <h4 className="text-sm font-semibold">{song.title}</h4>
-                    <p className="text-xs text-zinc-400">{song.artist}</p>
+                    <p className="text-xs text-zinc-400">{song.artist.name}</p>
                 </div>
             </div>
 
@@ -114,24 +196,26 @@ export default function MusicPlayer({ song }: Props) {
                     <button onClick={() => setIsShuffle(!isShuffle)} className={isShuffle ? "text-green-500" : "hover:text-white text-gray-400"}>
                         <Shuffle size={20} />
                     </button>
-                    <button className="hover:text-white text-gray-400 cursor-pointer">
+                    <button className="hover:text-white text-gray-400 cursor-pointer" onClick={handlePrev}>
                         <SkipBack size={20} />
                     </button>
                     <button onClick={togglePlay} className="bg-white text-black p-1 rounded-full cursor-pointer">
                         {isPlaying ? <Pause size={20} /> : <Play size={20} />}
                     </button>
-                    <button className="hover:text-white text-gray-400 cursor-pointer">
+                    <button className="hover:text-white text-gray-400 cursor-pointer" onClick={handleNext}>
                         <SkipForward size={20} />
                     </button>
-                    <button onClick={cycleRepeatMode} className={repeatMode === 2 ? "text-green-500" : ""}>
+                    <button onClick={cycleRepeatMode} disabled={isShuffle} className={repeatMode === 2 ? "text-green-500" : ""}>
                         {repeatMode === 2 ? <Repeat1 size={20} /> : <Repeat size={20} className={repeatMode === 1 ? "text-green-500" : "text-gray-400 hover:text-white"} />}
                     </button>
                 </div>
-                <input 
-                    type="range" 
-                    value={progress} 
-                    onChange={handleSeek} 
-                    className="w-full h-1 bg-zinc-700 rounded-lg cursor-pointer accent-green-500"/>
+
+                {/* Thanh tiến trình */}
+                <div className="w-full flex gap-3 items-center text-[12px] text-gray-400">
+                    <span>{formatTime((progress/100) * duration)}</span>
+                    <input type="range" value={progress} onChange={handleSeek} className="w-full h-1 bg-zinc-700 rounded-lg cursor-pointer accent-green-500"/>
+                    <span>{formatTime((duration - (progress / 100) * duration))}</span>
+                </div>
             </div>
 
             {/* Right: Volume */}
@@ -149,9 +233,14 @@ export default function MusicPlayer({ song }: Props) {
 
             <audio 
                 ref={audioRef} 
-                src={song.audioSrc} 
+                // src={song.audioSrc} 
+                src={audioUrl ?? undefined}
                 onTimeUpdate={handleTimeUpdate} 
                 onEnded={handleEnded}
+                onLoadedMetadata={() => {
+                    const audio = audioRef.current;
+                    if (audio) setDuration(audio.duration);
+                }}
                 preload="auto" />
         </div>
     );

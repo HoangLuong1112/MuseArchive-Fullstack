@@ -1,22 +1,27 @@
-// app/api/albums/[id]/route.ts
-import { join } from 'path';
-import { existsSync, readFileSync } from 'fs';
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
+import { albums } from '../data'
+import { tracks } from '@/app/api/tracks/data'
+
 
 export async function GET(
-  request: Request,
-  context: { params: { id: string } }
+    _: Request, 
+    { params }: { params: Promise<{ id: string }> }
 ) {
-  const filePath = join(
-    process.cwd(),
-    'public/dummy_data',
-    `${context.params.id}.json`
-  );
+    const {id} = await params;
+    const album = albums.find(p => p.id === id);
 
-  if (!existsSync(filePath)) {
-    return NextResponse.json({ error: 'Album not found' }, { status: 404 });
-  }
+    if (!album) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
 
-  const data = readFileSync(filePath, 'utf-8');
-  return NextResponse.json(JSON.parse(data));
+    //lấy dữ liệu các bài hát từ file khác
+    const resolvedSongs = album.songList
+        .map(songId => tracks.find(song => song.id === songId))
+        .filter(Boolean); // loại bỏ null nếu ID không khớp
+    
+    
+    return NextResponse.json({
+        ...album,
+        songs: resolvedSongs
+    })
 }

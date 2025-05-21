@@ -1,40 +1,105 @@
-interface Song {
-  id: string;
-  name: string;
-  audio: string;
-  cover: string;
-  duration: number;
-  musician: string;
-}
+'use client'
 
-interface Album {
-  id: string;
-  name: string;
-  musician: string;
-  songs: string[];
-}
+import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+import { Album, SongProps, SongPropsFromJSON } from '@/types/song_final'
+import Banner from '@/app/component/Banner'
+import SongList from '@/app/component/SongList'
+import { useAuth } from '@/app/context/AuthContext'
 
-export default async function AlbumPage({ params }: { params: { id: string } }) {
-  const albumRes = await fetch(`http://localhost:3000/api/albums/${params.id}`);
-  if (!albumRes.ok) return <div>Album không tồn tại.</div>;
-  const album: Album = await albumRes.json();
 
-  const songPromises = album.songs.map(songId =>
-    fetch(`http://localhost:3000/api/songs/${songId}`).then(res => res.json())
-  );
-  const songs: Song[] = await Promise.all(songPromises);
 
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">{album.name} - {album.musician}</h1>
-      <ul className="mt-4">
-        {songs.map(song => (
-          <li key={song.id} className="mb-4">
-            <p className="font-medium">{song.name}</p>
-            <audio controls src={song.audio} />
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+export default function AlbumDetail() {
+    const { id } = useParams()          //Dùng useParams() để lấy id từ URL: ví dụ /playlist/1 → id = '1'
+    const { getAccessToken } = useAuth()
+    const [album, setAlbum] = useState<Album | null>(null)
+
+    // useEffect(() => {
+    //     fetch(`/api/albums/${id}`)
+    //     .then(res => res.json())
+    //     .then(data => setAlbum(data))
+    // }, [id])
+
+    useEffect(() => {
+        const fetchAlbum = async () => {
+            const token = await getAccessToken();
+            if (!token) {
+                console.warn('Không tìm thấy access token');
+                return;
+            }
+
+            try {
+                //lấy thông tin chi tiết bài hát
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/albums/${id}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+                if(!res.ok) {
+                    console.error('Failed to fetch album detail');
+                    return;
+                }
+                const data = await res.json();
+                console.log('Chi tiết album: ', data);
+
+                const albumSong: SongProps[] = data.songs.map((item: SongPropsFromJSON) => ({
+                    id: item.id,
+                    title: item.title,
+                    artist: {
+                        id: item.musicians[0].id,
+                        name: item.musicians[0].musician_name,
+                    },
+                    albumArt: item.albumArt,
+                    duration: item.duration,
+                    dayAdd: item.day_add,
+                    views: item.views,
+                    // album: {
+                    //     id: item.album?.id,
+                    //     name: item.album?.album_name,
+                    // },
+                }))
+
+                //chuyển đổi sang type Musician
+                const formattedData: Album = {
+                    id: data.id,
+                    albumName: data.album_name,
+                    coverUrl: data.coverurl,
+                    musician: {
+                        id: data.songs[0].musicians[0].id,
+                        name: data.songs[0].musicians[0].musician_name,
+                    },
+                    dayAdd: data.day_add,
+                    songs: albumSong, //backend trả dữ liệu bài hát về khi nhấn vào chi tiết bài hát
+                }
+                
+                setAlbum(formattedData);
+            } catch (err) {
+                console.error('Error fetching albums: ', err);
+            }
+        };
+        fetchAlbum();
+    }, [getAccessToken, id])
+
+    // hàm tính thời gian
+    const totalDuration = album?.songs?.reduce((sum, song) => sum + (song.duration || 0), 0) ?? 0;
+    // hàm đổi thời gian ra đơn vị
+    const formatDuration = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins} phút ${secs.toString().padStart(2, '0')} giây`;
+    };
+    //  số thời gian
+    const totalDurationString = formatDuration(totalDuration);
+    //  số bài hát
+
+    if (!album) return <div className="p-4">Đang tải...</div>
+
+    return (
+        <div className="">
+            <Banner type='Album' coverUrl={album.coverUrl} name={album.albumName} musician={album.musician} dayAdd={album.dayAdd} numberofsong={album?.songs?.length} duration={totalDurationString}/>
+            <SongList songlist={album.songs}/>
+        </div>
+    )
 }
