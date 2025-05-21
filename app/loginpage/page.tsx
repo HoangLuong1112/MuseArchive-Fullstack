@@ -36,6 +36,7 @@ const LoginPage = () => {
 
 				// Chỉnh lại dữ liệu từ json user trả về để gửi sang Context cho đúng type Account
 				const sortedUser: Account = {
+					id: data.user.id,
 					userName: data.user.username,
 					password: '', 				// Không có trả pass, bỏ trống
 					email: data.user.email,

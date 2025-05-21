@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Album, SongProps } from '@/types/song_final'
+import { Album, SongProps, SongPropsFromJSON } from '@/types/song_final'
 import Banner from '@/app/component/Banner'
 import SongList from '@/app/component/SongList'
 import { useAuth } from '@/app/context/AuthContext'
+
+
 
 export default function AlbumDetail() {
     const { id } = useParams()          //Dùng useParams() để lấy id từ URL: ví dụ /playlist/1 → id = '1'
@@ -42,24 +44,21 @@ export default function AlbumDetail() {
                 const data = await res.json();
                 console.log('Chi tiết album: ', data);
 
-                const albumSong: SongProps[] = data.songs.map((item: SongProps) => ({
+                const albumSong: SongProps[] = data.songs.map((item: SongPropsFromJSON) => ({
                     id: item.id,
                     title: item.title,
                     artist: {
-                        id: '',
-                        name: 'null artist name',
+                        id: item.musicians[0].id,
+                        name: item.musicians[0].musician_name,
                     },
-                    albumArt: '',
-                    audioSrc: '',
+                    albumArt: item.albumArt,
                     duration: item.duration,
-
-                    dayAdd: '',
-                    views: 111,
-                    album: {
-                        id: data.id,
-                        name: data.albumName,
-                    },
-                    videoSrc: '',
+                    dayAdd: item.day_add,
+                    views: item.views,
+                    // album: {
+                    //     id: item.album?.id,
+                    //     name: item.album?.album_name,
+                    // },
                 }))
 
                 //chuyển đổi sang type Musician
@@ -68,16 +67,16 @@ export default function AlbumDetail() {
                     albumName: data.album_name,
                     coverUrl: data.coverurl,
                     musician: {
-                        id: '1',
-                        name: 'null musician name',
+                        id: data.songs[0].musicians[0].id,
+                        name: data.songs[0].musicians[0].musician_name,
                     },
-                    dayAdd: 'null day',
+                    dayAdd: data.day_add,
                     songs: albumSong, //backend trả dữ liệu bài hát về khi nhấn vào chi tiết bài hát
                 }
                 
                 setAlbum(formattedData);
             } catch (err) {
-                console.error('Error fetching musicians: ', err);
+                console.error('Error fetching albums: ', err);
             }
         };
         fetchAlbum();

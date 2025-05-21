@@ -39,8 +39,8 @@ POST /api/user-playlists/ - Tạo một playlist mới cho người dùng
 GET /api/user-playlists/{id}/ - Lấy chi tiết playlist của người dùng
 PUT /api/user-playlists/{id}/ - Cập nhật playlist của người dùng
 DELETE /api/user-playlists/{id}/ - Xóa playlist của người dùng
-POST /api/user-playlists/{id}/add-song/ - Thêm bài hát vào playlist
-POST /api/user-playlists/{id}/remove-song/ - Xóa bài hát khỏi playlist
+POST /api/user-playlists/{id}/add_song/ - Thêm bài hát vào playlist
+POST /api/user-playlists/{id}/remove_song/ - Xóa bài hát khỏi playlist
 
 API Bài hát Yêu thích:
 GET /api/favorite-songs/ - Liệt kê các bài hát yêu thích của người dùng
@@ -74,3 +74,5 @@ GET auth/profile/ - Lấy thông tin hồ sơ người dùng
 PUT auth/profile/ - Cập nhật thông tin hồ sơ người dùng
 Theo dõi Người dùng:
 GET auth/followed-musicians/ - Lấy danh sách các nhạc sĩ mà người dùng đang theo dõi
+
+mẫu API để cập nhập thông tin

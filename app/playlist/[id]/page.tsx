@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Playlist, SongProps } from '@/types/song_final'
+import { Playlist, SongProps, SongPropsFromJSON } from '@/types/song_final'
 import Banner from '@/app/component/Banner'
 import SongList from '@/app/component/SongList'
 import { useAuth } from '@/app/context/AuthContext'
@@ -28,7 +28,7 @@ export default function PlaylistDetail() {
 	
 				try {
 					//lấy thông tin chi tiết bài hát
-					const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/playlists/${id}/`, {
+					const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/user-playlists/${id}/`, {
 						method: 'GET',
 						headers: {
 							'Authorization': `Bearer ${token}`,
@@ -36,31 +36,28 @@ export default function PlaylistDetail() {
 						}
 					});
 					if(!res.ok) {
-						console.error('Failed to fetch album detail');
+						console.error('Failed to fetch playlist detail');
 						return;
 					}
 					const data = await res.json();
-					console.log('Chi tiết album: ', data);
+					console.log('Chi tiết playlist: ', data);
 	
 					//lấy danh sách bài từ json
-					const albumSong: SongProps[] = data.songs.map((item: SongProps) => ({
+					const albumSong: SongProps[] = data.songs.map((item: SongPropsFromJSON) => ({
 						id: item.id,
 						title: item.title,
 						artist: {
-							id: '',
-							name: 'null artist name',
+							id: item.musicians[0].id,
+							name: item.musicians[0].musician_name,
 						},
-						albumArt: '',
-						audioSrc: '',
+						albumArt: item.albumArt,
 						duration: item.duration,
-	
-						dayAdd: '',
-						views: 111,
+						dayAdd: item.day_add,
+						views: item.views,
 						album: {
-							id: data.id,
-							name: data.albumName,
+							id: item.album?.id,
+							name: item.album?.album_name,
 						},
-						videoSrc: '',
 					}))
 	
 					//chuyển đổi sang type Musician

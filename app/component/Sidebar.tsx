@@ -1,11 +1,10 @@
 'use client';
-import { Heart, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Heart, ChevronLeft, ChevronRight, Plus, XIcon } from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import SidebarPlaylistCard from './SidebarPlaylistCard';
-import { playlists } from '../api/playlists/data';
 import { useAuth } from '../context/AuthContext';
-import { Playlist } from '@/types/song';
+import { Playlist } from '@/types/song_final';
 import CreatePlaylistModal from './CreatePlaylistModal';
 
 const MIN_WIDTH = 90;
@@ -15,7 +14,9 @@ type SidebarPlaylist = {
 	id: string;
 	playlist_name: string;
 	cover_image: string;
-	// user_id: string;
+	description: string;
+	is_public: boolean;
+	user_id: string;
 }
 
 const Sidebar = () => {
@@ -26,31 +27,14 @@ const Sidebar = () => {
 	const isCollapsed = sidebarWidth <= 90;
 	const [showMenu, setShowMenu] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-
 	const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
 	
 
 
 	//hàm lọc các playlist ra
-	// const userPlaylists = playlists.filter(p =>
-	// 	currentUser?.userPlaylist.includes(p.id)
-	// );
-
-	//đang bị lỗi, chưa sửa
-	const handleCreate = (newPlaylist: Playlist) => {
-		const normalizedPlaylist = {
-			id: newPlaylist.id,
-			playlistName: newPlaylist.playlistName,
-			coverUrl: newPlaylist.coverUrl,
-			description: newPlaylist.description || '',
-			createdby: newPlaylist.createdby || 'unknown',
-			dayAdd: newPlaylist.dayAdd || new Date().toISOString(),
-			songList: newPlaylist.songList || []
-		};
-		playlists.push(normalizedPlaylist);
-		alert('🎉 Playlist đã được tạo!');
-		setShowModal(false);
-	};
+	const sortUserPlaylists = userPlaylists.filter(p =>
+		p.createdby === currentUser?.id
+	);
 
 
 	const startResizing = (e: React.MouseEvent) => {
@@ -109,13 +93,16 @@ const Sidebar = () => {
 			}
 
 			const data = await res.json();
-			console.log('Playlist của người dùng: ', data);
+			// console.log('Playlist người dùng - Sidebar: ', data);
 
 			// Nếu cần map lại field cho đúng type Playlist
 			const formattedPlaylists: Playlist[] = data.map((item: SidebarPlaylist) => ({
 				id: item.id,
 				playlistName: item.playlist_name,
 				coverUrl: item.cover_image,
+				description: item.description || '',
+				isPublic: item.is_public,
+				createdby: item.user_id,
 			}));
 
 			setUserPlaylists(formattedPlaylists);
@@ -204,7 +191,7 @@ const Sidebar = () => {
 
 				{/* === Playlist của người dùng === */}
 				<div className="flex-1 overflow-auto">
-					{userPlaylists.map((playlist, index) => (
+					{sortUserPlaylists.map((playlist, index) => (
 						<SidebarPlaylistCard key={index} playlist={playlist} collapsed={isCollapsed} />
 					))}
 				</div>
@@ -216,9 +203,9 @@ const Sidebar = () => {
 			{showModal && (
 			<div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-60">
 				<div className="relative bg-black">
-					<CreatePlaylistModal onCreate={handleCreate} />
+					<CreatePlaylistModal />
 					<button onClick={() => setShowModal(false)} className="absolute top-2 right-2 text-white text-xl hover:text-red-400">
-						×
+						<XIcon size={30} />
 					</button>
 				</div>
 			</div>

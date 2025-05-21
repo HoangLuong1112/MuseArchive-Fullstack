@@ -137,7 +137,7 @@ export default function MusicPlayer() {
                 setAudioUrl(null);
             }
         }
-    }, [song?.id, audioUrl]);
+    }, [song?.id, audioUrl, getAccessToken]);
     
     //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
     useEffect(() => {
@@ -165,7 +165,7 @@ export default function MusicPlayer() {
             }
             setProgress(0); // reset thanh tiến trình
         }
-    }, [song?.audioSrc]);
+    }, [song?.audioSrc, audioUrl]);
 
     
 

@@ -6,12 +6,27 @@ import { usePlayer } from '../context/PlayerContext'
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '../context/AuthContext'
-// import { playlists } from '../api/playlists/data'
+
+type LocalPlaylist = {
+	id: string;
+	playlistName: string;
+	createdby?: string;
+	songs: { id: string }[]; // chỉ cần id để check
+}
 
 interface SongRowProps {
 	song: SongProps
 	index: number
 	songlist: SongProps[]
+}
+
+type SongRowUserPlaylist = {
+	id:string
+	playlist_name: string
+	user_id: string
+	songs: {
+		id: string	
+	}[]
 }
 
 function formatDuration(duration: number) {
@@ -20,19 +35,24 @@ function formatDuration(duration: number) {
 	return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
+
+
 export default function SongRow({ song, index, songlist }: SongRowProps) {
+	const { getAccessToken, currentUser } = useAuth()
 	const { currentSong, setCurrentSong } = usePlayer()
-	const { currentUser, setCurrentUser } = useAuth()
-	// thêm state mở menu để tham chiếu vân vân (cho nút thêm vào playlist)
-	const [showOptions, setShowOptions] = useState(false);
+	const [userPlaylists, setUserPlaylists] = useState<LocalPlaylist[]>([])
+	const [showOptions, setShowOptions] = useState(false); //mở cac option
 	const menuRef = useRef<HTMLDivElement>(null);
+	// const [likedSongs, setLikedSongs] = useState<string[]>([]);
+	const [isLiked, setIsLiked] = useState(false);
 
-
-	const isLiked = currentUser?.likedSong?.includes(song.id)
+	//check xem bài hát có trong danh sách yêu thích hay không
+	// const isLiked = likedSongs.includes(song.id);
+	//check xem bài hát có đang phát hay không
 	const isCurrent = currentSong?.title === song.title
 
-	console.log('xxxx: ', showOptions)
-	// Đóng khi click ra ngoài
+
+	// Đóng cái khung option khi click ra ngoài
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -43,60 +63,140 @@ export default function SongRow({ song, index, songlist }: SongRowProps) {
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, []);
 
+	//	Trạng thái bài hát hiện tại
+
+	//lấy danh sách bài hát yêu thích để check
+	useEffect(() => {
+		const fetchLikedSongs = async () => {
+			if (!currentUser) return;
+
+			try {
+				const token = await getAccessToken();
+				const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/favorite-songs/`, {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json',
+					},
+				});
+
+				if (!res.ok) throw new Error('Không lấy được danh sách yêu thích');
+
+				const data = await res.json();
+				console.log('Danh sách bài hát yêu thích: ', data);
+				
+				// check bài hát có trong danh sách yêu thích hay không
+				const ids = data.map((entry: { song: { id: string } }) => entry.song.id);
+				setIsLiked(ids.includes(song.id));
+			} catch (err) {
+				console.error('Error fetching liked songs:', err);
+			}
+		};
+
+		fetchLikedSongs();
+	}, [currentUser, song.id, getAccessToken]);
+
 	// xử lý bài hát yêu thích
-	const toggleLike = (e: React.MouseEvent) => {
+	const toggleLike = async (e: React.MouseEvent) => {
 		e.stopPropagation()
-		if (!currentUser) return
+		if (!currentUser) return;
 
-		let updatedLikedSongs = [...(currentUser.likedSong || [])]
+		try {
+			const token = await getAccessToken();
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/favorite-songs/toggle/`, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ song_id: song.id }), // ?????????????????????????????
+			});
 
-		if (isLiked) {
-			// Gỡ bỏ bài hát khỏi danh sách đã thích
-			updatedLikedSongs = updatedLikedSongs.filter(id => id !== song.id)
-		} else {
-			// Thêm bài hát vào danh sách đã thích
-			updatedLikedSongs.push(song.id)
+			if (!res.ok) throw new Error('Không thể chuyển trạng thái yêu thích');
+
+			setIsLiked(prev => !prev);
+		} catch (err) {
+			console.error('Lỗi khi toggle like:', err);
+			alert('Có lỗi khi chuyển trạng thái yêu thích');
 		}
-
-		// Cập nhật currentUser
-		setCurrentUser({
-			...currentUser,
-			likedSong: updatedLikedSongs
-		})
 	}
 
-	// XỬ LÝ THÊM XÓA BÀI HÁT
-	// const userPlaylists = playlists.filter(p =>
-	// 	currentUser?.userPlaylist.includes(p.id)
-	// );
 
-	// Kiểm tra bài hát có trong playlist chưa
-	// const isSongInPlaylist = (playlistId: string) => {
-	// 	const playlist = playlists.find(p => p.id === playlistId);
-	// 	return playlist?.songList?.includes(song.id);
-	// };
+	// lấy các playlist của người dùng
+	useEffect(() => {
+		const fetchUserPlaylists = async () => {
+			if (!currentUser) return;
 
-	// const handleToggleSongInPlaylist = (playlistId: string) => {
-	// 	const playlist = playlists.find(p => p.id === playlistId);
-	// 	if (!playlist) return;
+			try {
+			const token = await getAccessToken();
+				const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/user-playlists/`, {
+					headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-Type': 'application/json',
+					},
+				});
 
-	// 	if (!playlist.songList) playlist.songList = [];
+				if (!res.ok) {
+					console.error('Failed to fetch playlists');
+					return;
+				}
 
-	// 	const songExists = playlist.songList.includes(song.id);
+				const data = await res.json();
 
-	// 	if (songExists) {
-	// 		playlist.songList = playlist.songList.filter(id => id !== song.id);
-	// 	} else {
-	// 		playlist.songList.push(song.id);
-	// 	}
+				// Map lại field cho đúng type Playlist
+				const formattedPlaylists: LocalPlaylist[] = data.map((item: SongRowUserPlaylist) => ({
+					id: item.id,
+					playlistName: item.playlist_name,
+					createdby: item.user_id,
+					songs: item.songs, //lấy id để check
+				}));
+				// Lọc các playlist của người dùng
+				const sortUserPlaylists = formattedPlaylists.filter(p =>
+					p.createdby === currentUser?.id
+				);				
+				
+				setUserPlaylists(sortUserPlaylists);
+			} catch (err) {
+				console.error('Error fetching playlists:', err);
+			}
+		};
 
-	// 	// Cập nhật lại currentUser nếu cần
-	// 	setCurrentUser({ ...currentUser! });
-	// };
+		fetchUserPlaylists();
+	}, [currentUser, getAccessToken]);
+	
+
+	//xử lý thêm bài hát vào playlist
+	const handleToggleSongInPlaylist = async (playlistId: string, isChecked: boolean) => {
+		try {
+			const token = await getAccessToken();
+			const url = `${process.env.NEXT_PUBLIC_API_URL}api/user-playlists/${playlistId}/${isChecked ? 'add_song' : 'remove_song'}/`;
+			const res = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ song_id: song.id }),
+			});
+
+			if (!res.ok) throw new Error(`Lỗi khi ${isChecked ? 'thêm' : 'xoá'} bài hát`);
+
+			// Cập nhật lại userPlaylists local (cập nhật state cho UX mượt hơn)
+			setUserPlaylists(prev => prev.map(pl => pl.id === playlistId ? {
+					...pl,
+					songs: isChecked
+						? [...(pl.songs ?? []), song] : (pl.songs ?? []).filter(s => s.id !== song.id),
+				} : pl
+			));
+		} catch (err){
+			console.error(err);
+			alert('Có lỗi xảy ra');
+		}
+	};
 
 	const handleContextMenu = (e: React.MouseEvent) => {
 		e.stopPropagation()
-		// mở menu tùy chọn (nếu có)
+		// mở menu tùy chọn
 		setShowOptions(prev => !prev);
 	}
 
@@ -126,31 +226,35 @@ export default function SongRow({ song, index, songlist }: SongRowProps) {
 
             {/* cột 4 */}
 			<div className="col-span-2 flex justify-end gap-3">
+
+				{/* Tim / Like */}
 				<button onClick={toggleLike} title={isLiked ? 'Bỏ thích' : 'Thích'} className="text-gray-400 hover:text-white">
 					{isLiked ? <FaHeart className="text-green-500" /> : <FaRegHeart />}
 				</button>
-				<button
-					onClick={handleContextMenu}
-					title="More options"
-					className="text-gray-400 hover:text-white">
+				
+				{/* Thêm vào playlist */}
+				<button onClick={handleContextMenu} title="More options" className="text-gray-400 hover:text-white">
 					<FaEllipsisH />
-					{/* {showOptions && (
-						<div ref={menuRef} className="absolute z-50 bg-zinc-800 border border-zinc-700 rounded shadow-md p-2 right-5 mt-1 w-64">
+
+					{showOptions && (
+						<div ref={menuRef} className="absolute z-80 bg-zinc-800 border border-zinc-700 rounded shadow-md p-2 right-5 w-fit">
 							<div className="text-white font-semibold mb-2">Thêm vào Playlist</div>
 							{userPlaylists.length === 0 && (
 								<div className="text-gray-400 text-sm">Bạn chưa có playlist nào</div>
 							)}
-							{userPlaylists.map(pl => {
-								const checked = isSongInPlaylist(pl.id);
-								return (
-									<label key={pl.id} className="flex items-center gap-2 text-sm text-gray-300 hover:text-white cursor-pointer py-1">
-										<input type="checkbox" checked={checked} onChange={() => handleToggleSongInPlaylist(pl.id)}/>
-										<span>{pl.playlistName}</span>
-									</label>
-								);
-							})}
+							{userPlaylists.map(pl => (
+								<label key={pl.id} className="flex justify-between items-center gap-2 text-sm text-gray-300 hover:text-white cursor-pointer py-1">
+									<input
+										type="checkbox"
+										checked={(pl.songs ?? []).some(s => s.id === song.id)}
+										onChange={(e) => handleToggleSongInPlaylist(pl.id, e.target.checked)}
+									/>
+									<span>{pl.playlistName}</span>
+								</label>
+								
+							))}
 						</div>
-					)} */}
+					)}
 				</button>
 			</div>
 		</div>

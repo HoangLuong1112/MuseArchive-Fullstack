@@ -1,5 +1,5 @@
 'use client';
-import { SongProps } from '@/types/song';
+import { SongProps } from '@/types/song_final';
 import { createContext, useContext, useState } from 'react';
 // createContext → Dùng để tạo ra một "kho lưu trữ chia sẻ".
 // useContext → Dùng để lấy dữ liệu từ context đã tạo.

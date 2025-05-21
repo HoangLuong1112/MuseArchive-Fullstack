@@ -59,10 +59,10 @@ export default function TrackDetail() {
 
                     dayAdd: data.day_add,
                     views: data.views,
-                    album: {
+                    album: data.album ? {
                         id: data.album.id,
                         name: data.album.album_name,
-                    },
+                    }:null,
                     videoSrc: '',
                 }
                 

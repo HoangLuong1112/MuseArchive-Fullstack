@@ -9,10 +9,12 @@ type AlbumListItem = {
     id: string,
     album_name: string,
     coverurl: string,
-    musician: {
-        id: string,
-        name: string,
-    }
+    songs: {
+        musicians: {
+            id: string,
+            musician_name: string,
+        }[]
+    }[],
 }
 
 export default function AlbumPage() {
@@ -50,23 +52,12 @@ export default function AlbumPage() {
 
                 //chuyển đổi sang type Musician
                 const formattedData: Album[] = data.map((item: AlbumListItem) => ({
-                    /*export type Album = {
-                        id: string;
-                        albumName: string;
-                        coverUrl: string;
-                        musician: {
-                            id: string;
-                            name: string;
-                        };
-                        dayAdd?: string;
-                        songs?: SongProps[]; //backend trả dữ liệu bài hát về khi nhấn vào chi tiết bài hát
-                    } */
                     id: item.id,
                     albumName: item.album_name,
                     coverUrl: item.coverurl,
                     musician: {
-                        id: 'chuasua',
-                        name: 'chưa sửa',
+                        id: item.songs[0].musicians[0].id,
+                        name: item.songs[0].musicians[0].musician_name,
                     }
                 }))
                 

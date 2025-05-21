@@ -11,10 +11,10 @@ export type SongProps = {
 
     dayAdd: string; //yyyy-mm-dd 
     views: number;
-    album: {
+    album?: {
         id: string;
         name: string;
-    };
+    } | null;
     videoSrc: string;
     // các bài hát đơn ko có album gọi là track
 };
@@ -37,6 +37,7 @@ export type Playlist ={
     coverUrl: string;
     description?: string;
     createdby?: string; //hiển thị user đã tạo cái playlist này hoặc khỏi hiện luôn
+    isPublic?: boolean; 
     dayAdd?: string;
     dayUpdate: string;
     songs?: SongProps[];
@@ -62,14 +63,32 @@ export type Musician = {
 }
 
 export type Account = {
+    id: string;
     userName: string;
-    password: string;
+    password?: string;
     email: string;
     gender: boolean;
     birthday: string;
     avatarPic: string;
     
-    likedSong: string[];    // danh sách các bài hát yêu thích, trả id bài hát ["shake-it-off", "alabama-sweet-home"]
-    followed: string[];     //các nhạc sĩ mà user đã nhấn theo dõi, trả id nhạc sĩ
-    userPlaylist: string[];  //để id playlist mà user đã tạo
+    likedSong?: string[];    // danh sách các bài hát yêu thích, trả id bài hát ["shake-it-off", "alabama-sweet-home"]
+    followed?: string[];     //các nhạc sĩ mà user đã nhấn theo dõi, trả id nhạc sĩ
+    userPlaylist?: string[];  //để id playlist mà user đã tạo
+}
+
+export type SongPropsFromJSON = {
+    id: string;
+    title: string;
+    musicians: {
+        id: string;
+        musician_name: string;
+    }[];
+    albumArt: string;
+    duration: string;
+    day_add: string;
+    views: number;
+    album?: {
+        id: string;
+        album_name: string;
+    }
 }

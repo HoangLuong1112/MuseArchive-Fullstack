@@ -18,7 +18,7 @@ export type Banner = {
     album?: {
         id: string;
         name: string;
-    }
+    } | null;
 }
 
 export default function Banner({type, coverUrl, name, description, musician, createdBy, dayAdd, numberofsong, duration, views, album}: Banner) {
