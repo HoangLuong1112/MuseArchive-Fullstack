@@ -1,4 +1,8 @@
 This repo using subtree to add frontend and backend
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
 ## 1/ Create repo
 
 ## 2/ Add repo frontend and backend in subtree form
