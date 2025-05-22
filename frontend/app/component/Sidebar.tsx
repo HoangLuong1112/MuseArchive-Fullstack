@@ -116,44 +116,43 @@ const Sidebar = () => {
 
 	return (
 		<div className="relative h-full flex">
-			<div style={{ width: `${sidebarWidth}px`, transition: 'width 0.2s' }} className="bg-zinc-900 text-white h-full p-4 flex flex-col relative z-10 rounded-r-2xl">
+			<div style={{ width: `${sidebarWidth}px`, transition: 'width 0.2s' }} className="bg-gradient-to-t from-purple-700 to-blue-800 text-white h-full p-4 flex flex-col relative z-10 rounded-2xl">
 		
 				{/* === Top Bar === */}
 				{!isCollapsed ? (
-				<div className="flex items-center justify-between mb-4">
+					<div className="flex items-center justify-between mb-4 rounded-2xl">
 
-					{/* Nút tạo playlist mới */}
-					<div className="relative" ref={menuRef}>
-						<button title="Thêm" onClick={() => setShowMenu(prev => !prev)} className="p-2 rounded hover:bg-gray-700 cursor-pointer">
-							<Plus size={20} />
+						{/* Nút tạo playlist mới */}
+						<div className="relative" ref={menuRef}>
+							<button title="Thêm" onClick={() => setShowMenu(prev => !prev)} className="p-2 rounded-full hover:bg-gray-700 cursor-pointer">
+								<Plus size={20} />
+							</button>
+
+							{showMenu && (
+								<div className="absolute top-10 left-0 bg-zinc-800 border border-gray-700 rounded shadow-md w-40 z-60">
+									{/* Gọi modal thay vì Link */}
+									<button
+										onClick={() => {
+											setShowModal(true);
+											setShowMenu(false);
+										}} className="w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer">
+										Tạo Playlist
+									</button>
+								</div>
+							)}
+						</div>
+
+						<span>Thư viện</span>
+
+						{/* Collapse button luôn hiển thị */}
+						<button onClick={() => setSidebarWidth(isCollapsed ? 250 : MIN_WIDTH)}
+							className={`w-8 h-8 flex items-center justify-center rounded-full transition 
+								${isCollapsed ? 'hover:bg-gray-600' : 'hover:bg-gray-700'} 
+								text-white cursor-pointer`}
+							title={isCollapsed ? 'Mở rộng' : 'Thu gọn'}>
+								{isCollapsed ? <ChevronRight size={30} /> : <ChevronLeft size={30} />}
 						</button>
-
-						{showMenu && (
-							<div className="absolute top-10 left-0 bg-zinc-800 border border-gray-700 rounded shadow-md w-40 z-60">
-								{/* Gọi modal thay vì Link */}
-								<button
-									onClick={() => {
-										setShowModal(true);
-										setShowMenu(false);
-									}} className="w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer">
-									Tạo Playlist
-								</button>
-							</div>
-						)}
 					</div>
-
-					<span>Thư viện</span>
-
-					{/* Collapse button luôn hiển thị */}
-					<button
-						onClick={() => setSidebarWidth(isCollapsed ? 250 : MIN_WIDTH)}
-						className={`w-8 h-8 flex items-center justify-center rounded-full transition 
-						${isCollapsed ? 'hover:bg-gray-600' : 'hover:bg-gray-700'} 
-						text-white cursor-pointer`}
-						title={isCollapsed ? 'Mở rộng' : 'Thu gọn'}>
-							{isCollapsed ? <ChevronRight size={30} /> : <ChevronLeft size={30} />}
-					</button>
-				</div>
 				) : 
 				<div>
 					<div className="flex items-center justify-center mb-4">

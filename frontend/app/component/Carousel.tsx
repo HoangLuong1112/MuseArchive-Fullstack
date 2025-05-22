@@ -24,7 +24,7 @@ export default function Carousel<T>({ title, items, renderItem }: CarouselProps<
     // };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 p-3 rounded-4xl bg-zinc-800">
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">{title}</h2>
                 {/* <div className="space-x-2 hidden md:flex">
