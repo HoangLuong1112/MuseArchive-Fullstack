@@ -31,7 +31,8 @@ const LoginPage = () => {
 			const data = await response.json();
 			console.log('Login: ', data);
 			
-			if (!response.ok) { throw new Error(data.error || "Đăng nhập thất bại");}
+			if (!response.ok) { throw new Error(data.error || "Tên đăng nhập hoặc mật khẩu không đúng");}
+
 			if (data.user) {
 
 				// Chỉnh lại dữ liệu từ json user trả về để gửi sang Context cho đúng type Account
@@ -52,7 +53,7 @@ const LoginPage = () => {
 				login(sortedUser, data.tokens.access, data.tokens.refresh); 			// lưu thông tin user đăng nhập vào Context 
 				router.push('/');
 			} else {
-				setError(data.error || 'Lỗi đăng nhập');
+				setError(data.error || 'Lỗi đăng nhập - user không được trả về');
 			}
 		} catch (err) {
 			if (err instanceof Error) {
@@ -79,7 +80,7 @@ const LoginPage = () => {
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							className="w-full p-3 mt-2 bg-[#333] text-white rounded-md"
-							placeholder="Nhập tên đăng nhập"
+							placeholder="Nhập email đăng nhập"
 							required />
 					</div>
 

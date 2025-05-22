@@ -4,6 +4,7 @@ import { Account } from '@/types/song_final';
 
 type AuthContextType = {
     currentUser: Account | null;
+    isLoading: boolean;
     login: (user: Account, access: string, refresh: string) => void;
     logout: () => void;
     setCurrentUser: React.Dispatch<React.SetStateAction<Account | null>>;
@@ -15,6 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<Account | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Load user và token từ localStorage khi mở lại trang
     useEffect(() => {
@@ -26,6 +28,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setCurrentUser(JSON.parse(storedUser));
         else
             logout(); //nếu thiếu bất kỳ cái gì thì logout
+
+        setIsLoading(false); // Đặt isLoading thành false đánh dấu đã load xong currentUser
+        /*currentUser có thể vẫn là null trong khi đang được load từ localStorage. Điều đó 
+        khiến useEffect hiểu nhầm là chưa đăng nhập và tự động router.push('/loginpage') quá sớm bên /app/page.tsx
+        nên mới tạo thêm cái isLoading để đánh dấu */
     }, []);
 
     // Lưu vào localStorage khi có thay đổi
@@ -98,7 +105,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ currentUser, login, logout, setCurrentUser, getAccessToken }}>
+        <AuthContext.Provider value={{ currentUser, isLoading, login, logout, setCurrentUser, getAccessToken }}>
             {children}
         </AuthContext.Provider>
     );
