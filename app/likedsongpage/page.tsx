@@ -97,7 +97,7 @@ export default function LikedSongsPage() {
 
     return (
         <div className="min-h-screen text-white">
-            <div className='bg-gradient-to-r from-blue-800 to-purple-800 w-full h-full flex flex-col gap-3 mb-5 rounded-2xl p-5'>
+            <div className='bg-gradient-to-tl from-blue-400 to-purple-400 w-full h-full flex flex-col gap-3 mb-5 rounded-2xl p-5'>
                 <p className="title">Các bài hát yêu thích</p>	
                 <div>
                     <span className="text-gray-300">Tạo bởi {currentUser?.userName}</span>

@@ -19,17 +19,12 @@ const NavBar: React.FC = () => {
     };
 
     return (
-        <div className="w-full h-16 px-6 flex items-center justify-between bg-black text-white shadow-sm relative py-4">
+        <div className="w-full h-16 px-6 flex items-center justify-between text-white shadow-sm relative py-4 bg-blue-950">
             {/* Left: Spotify logo */}
             <div className="flex items-center gap-2">
-                <Link href={"/"}>
-                    <Image
-                        src="https://upload.wikimedia.org/wikipedia/commons/7/78/Spotify_2.png"
-                        alt="Spotify Logo"
-                        width={32}
-                        height={32}
-                    />
-                </Link>
+                {/* <Link href={"/"}> */}
+                    <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Spotify_2.png" alt="Spotify Logo" width={32} height={32}/>
+                {/* </Link> */}
             </div>
 
             {/* Center: Home + Search */}
@@ -41,10 +36,6 @@ const NavBar: React.FC = () => {
                     </button>
                 </Link>
 
-                {/* <div className="flex items-center bg-neutral-800 px-3 py-1.5 rounded-full w-full max-w-md hover:bg-neutral-700 transition">
-                    <Search size={18} className="text-gray-400" />
-                    <input type="text" placeholder="Tìm kiếm bài hát, nghệ sĩ..." className="bg-transparent outline-none text-sm text-white ml-2 w-full placeholder-gray-400"/>
-                </div> */}
                 <SearchBar />
             </div>
 
@@ -56,17 +47,20 @@ const NavBar: React.FC = () => {
 
                 {/* User Avatar with dropdown (chỉ hiện nếu đã đăng nhập) */}
                 {currentUser ? (
-                    <div className="relative">
-                        <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-2 bg-gray-700 rounded-full px-3 py-1 hover:bg-gray-600 transition">
+                    <div className="relative group">
+                        <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-2 rounded-full px-3 py-1 bg-zinc-200 group-hover:bg-zinc-400 transition">
                             
                             {currentUser?.avatarPic ? (
                                 <Image src={currentUser.avatarPic} alt="avatar" width={24} height={24} className="rounded-full" />
                             ) : (
-                                <div className="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center text-sm font-bold">
+                                <div className="w-6 h-6 rounded-full text-black flex items-center justify-center text-sm font-bold">
                                     {currentUser.userName.charAt(0).toUpperCase()}
                                 </div>
                             )}
-                            <ChevronDown size={16} />
+                            <div className='text-black group-hover:text-white'>
+                                <ChevronDown size={16} />
+                            </div>
+                           
                         </button>
 
                         {showMenu && (

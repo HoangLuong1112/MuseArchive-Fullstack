@@ -23,12 +23,12 @@ export default function AppWrapper({ children }: { children: React.ReactNode }) 
         // bọc trong các Provider để có thể chạy bài hát ở bất kỳ chỗ nào trên trang bằng cách gọi
         <AuthProvider>
             <PlayerProvider>
-                <div className="h-screen w-full flex flex-col bg-black">
+                <div className="h-screen w-full flex flex-col bg-gray-900">
                     {!isLoginPage && !isSignUpPage  && <NavBar />}
-                    <div className="flex flex-1 min-h-0 gap-5 mx-5">
+                    <div className="flex flex-1 min-h-0 gap-3 mx-3 m-3 scrollbar-hide scroll-smooth">
                         {!isLoginPage && !isSignUpPage && <Sidebar />}
                         <div className={`flex-1 min-h-0 overflow-y-auto 
-                            ${!isLoginPage && !isSignUpPage ? 'bg-zinc-900 text-white rounded-2xl px-5 pt-5 pb-56' : ''}`}>
+                            ${!isLoginPage && !isSignUpPage ? 'bg-gradient-to-t from-purple-700 to-blue-800 text-white rounded-2xl px-5 pt-5 pb-56 scrollbar-hide scroll-smooth' : ''}`}>
                             {children}
                         </div>
                     </div>

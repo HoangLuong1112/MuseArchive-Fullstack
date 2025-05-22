@@ -20,6 +20,7 @@ export default function MusicPlayer() {
     const [volume, setVolume] = useState(100);              //trạng thái âm lượng (0=>100%)
     const [isShuffle, setIsShuffle] = useState(false);      // trạng thái Shuffle, khi true thì sẽ trộn bài ngẫu nhiên 
     const [repeatMode, setRepeatMode] = useState<0 | 1 | 2>(0);     // chế độ lặp lại. 0: none, 1: all, 2: one
+    const lastFetchedId = useRef<string | null>(null);      // Track song đã fetch để tránh fetch lại
 
     //lấy token để lát gọi API
     const { getAccessToken } = useAuth();
@@ -104,8 +105,14 @@ export default function MusicPlayer() {
 
     //lấy API bài hát ra
     useEffect(() => {
+        let currentUrl: string | null = null; //dùng để dọn dẹp url cũ
+
         const loadAudio = async () => {
             if (!song?.id) return;
+
+             // Nếu bài hát chưa đổi, không cần fetch lại
+            if (lastFetchedId.current === song.id) return;
+
             const token = await getAccessToken();
             if (!token) return;
 
@@ -123,8 +130,8 @@ export default function MusicPlayer() {
                 const blob = await res.blob();
                 const url = URL.createObjectURL(blob);
                 setAudioUrl(url);
-                setIsPlaying(true);
-                setProgress(0);
+                currentUrl = url;
+                lastFetchedId.current = song.id; // lưu lại id đã fetch
             } catch (err) {
                 console.error("Lỗi khi load audio: ", err);
             }
@@ -132,40 +139,47 @@ export default function MusicPlayer() {
         loadAudio();
         return () => {
             //clear URL cũ để tránh leak memory
-            if (audioUrl){
-                URL.revokeObjectURL(audioUrl);
-                setAudioUrl(null);
+            if (currentUrl){
+                URL.revokeObjectURL(currentUrl);
             }
         }
-    }, [song?.id, audioUrl, getAccessToken]);
+    }, [song?.id, getAccessToken]);
     
     //khi nhấn vào 1 bài hát khác thì gọi audio.play để phát nhạc ngay lập tức
     useEffect(() => {
         const audio = audioRef.current;
-        // if (audio && song?.audioSrc) {
-        if (audio && audioUrl) {
-            audio.src = audioUrl;
-            audio.load();
 
-            // audio.play().catch(err => console.warn("Autoplay blocked", err));
-            // setIsPlaying(true);
-            const tryPlay = () => {
-                audio.play()
-                    .then(() => setIsPlaying(true))
-                    .catch(err => {
+        if (!audio || !audioUrl) return;
+
+        const tryPlay = () => {
+            audio.play()
+                .then(() => setIsPlaying(true))
+                .catch(err => {
                     console.warn("Autoplay blocked:", err);
                     setIsPlaying(false); // Cho phép user click
-                    });
-            };
+                });
+        };
 
-            if (audio.readyState >= 3) {
-                tryPlay();
-            } else {
-                audio.oncanplay = tryPlay;
-            }
-            setProgress(0); // reset thanh tiến trình
+        audio.src = audioUrl;
+
+        // Chờ khi có thể play được mới play
+        if (audio.readyState >= 3) {
+            tryPlay();
+        } else {
+            audio.oncanplay = tryPlay;
         }
-    }, [song?.audioSrc, audioUrl]);
+        
+        // Đợi metadata mới reset progress và set duration
+        const handleLoadedMetadata = () => {
+            setDuration(audio.duration);
+            setProgress((audio.currentTime / audio.duration) * 100);
+        }
+        audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+        return () => {
+            audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        }
+    }, [audioUrl]);
 
     
 
@@ -179,7 +193,7 @@ export default function MusicPlayer() {
     if (!song) return null;
     
     return (
-        <div className="fixed bottom-0 left-0 w-full h-[80px] bg-zinc-900 text-white flex items-center justify-between px-6 shadow-xl z-50">
+        <div className="fixed bottom-0 left-0 w-full h-[80px] bg-zinc-700 text-white flex items-center justify-between px-6 shadow-xl z-50">
             
             {/* Left: Song Info */}
             <div className="flex items-center gap-4 w-50">
@@ -193,20 +207,47 @@ export default function MusicPlayer() {
             {/* Center: Controls */}
             <div className="flex flex-col items-center w-1/2">
                 <div className="flex items-center gap-6 mb-1">
+
+                    {/* Nút phát ngẫu nhiên */}
                     <button onClick={() => setIsShuffle(!isShuffle)} className={isShuffle ? "text-green-500" : "hover:text-white text-gray-400"}>
-                        <Shuffle size={20} />
+                        <div className="relative group">
+                            <Shuffle size={20} />
+                            <div className="absolute text-nowrap bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-black text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                                Phát ngẫu nhiên
+                            </div>
+                        </div>
                     </button>
+
+                    {/* Nút về bài phía trước */}
                     <button className="hover:text-white text-gray-400 cursor-pointer" onClick={handlePrev}>
                         <SkipBack size={20} />
                     </button>
+
+                    {/* Nút chạy/dừng */}
                     <button onClick={togglePlay} className="bg-white text-black p-1 rounded-full cursor-pointer">
                         {isPlaying ? <Pause size={20} /> : <Play size={20} />}
                     </button>
+
+                    {/* Nút sang bài kế tiếp */}
                     <button className="hover:text-white text-gray-400 cursor-pointer" onClick={handleNext}>
                         <SkipForward size={20} />
                     </button>
-                    <button onClick={cycleRepeatMode} disabled={isShuffle} className={repeatMode === 2 ? "text-green-500" : ""}>
-                        {repeatMode === 2 ? <Repeat1 size={20} /> : <Repeat size={20} className={repeatMode === 1 ? "text-green-500" : "text-gray-400 hover:text-white"} />}
+
+                    {/* Nút chế độ lặp */}
+                    <button onClick={cycleRepeatMode} disabled={isShuffle} >
+                        <div className="relative group">
+                            {repeatMode === 2 ? (
+                                <Repeat1 size={20} className="text-green-500" />
+                            ) : (
+                                <Repeat size={20} className={repeatMode === 1 ? "text-green-500" : "text-gray-400 hover:text-white"}/>
+                            )}
+                            <div className="absolute text-nowrap bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-black text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                                {isShuffle ? "Đang ở chế độ phát ngẫu nhiên, không được chọn" : 
+                                repeatMode === 0 ? "Không lặp" : repeatMode === 1 ? "Lặp lại tất cả" :  "Chỉ lặp lại bài này"}
+                                
+                            </div>
+                        </div>
+                        
                     </button>
                 </div>
 

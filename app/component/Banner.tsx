@@ -25,12 +25,12 @@ export default function Banner({type, coverUrl, name, description, musician, cre
     const year= dayAdd?.split('-')[0];
 
     return(
-        <div className='bg-gradient-to-r from-blue-600 to-green-400 hover:from-green-400 hover:to-blue-600 transition flex gap-5 p-5 h-[300px] rounded-2xl'>
+        <div className='bg-gradient-to-r from-blue-400 to-green-400 hover:from-green-400 hover:to-blue-400 transition flex gap-5 p-5 h-[300px] rounded-2xl'>
             <Image src={coverUrl} alt='Cover' height={350} width={350} className='h-[260px] w-[260px] rounded-2xl object-cover' layout="fixed"/>
             <div className='w-full h-full bottom-0 flex flex-col gap-3 justify-end'>
                 <p>{type}</p>
                 <p className="title">{name}</p>
-                <p className='card-subtitle'>{description}</p>	
+                <p className='text-[16px] text-gray-300'>{description}</p>	
                 <div>
                     <Link href={`/musician/${musician?.id}`} className="font-bold hover:underline">{musician?.name}</Link>
                     {createdBy && (
