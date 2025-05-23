@@ -82,7 +82,7 @@ export default function SongRow({ song, index, songlist }: SongRowProps) {
 				if (!res.ok) throw new Error('Không lấy được danh sách yêu thích');
 
 				const data = await res.json();
-				console.log('Danh sách bài hát yêu thích: ', data);
+				console.log('Check bài hát đc yêu thích ko: ', data);
 				
 				// check bài hát có trong danh sách yêu thích hay không
 				const ids = data.map((entry: { song: { id: string } }) => entry.song.id);

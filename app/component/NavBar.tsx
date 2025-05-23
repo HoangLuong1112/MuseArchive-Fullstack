@@ -22,9 +22,9 @@ const NavBar: React.FC = () => {
         <div className="w-full h-16 px-6 flex items-center justify-between text-white shadow-sm relative py-4 bg-blue-950">
             {/* Left: Spotify logo */}
             <div className="flex items-center gap-2">
-                {/* <Link href={"/"}> */}
+                <Link href={"/"}>
                     <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Spotify_2.png" alt="Spotify Logo" width={32} height={32}/>
-                {/* </Link> */}
+                </Link>
             </div>
 
             {/* Center: Home + Search */}

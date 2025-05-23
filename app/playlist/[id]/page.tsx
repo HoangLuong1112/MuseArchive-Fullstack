@@ -22,63 +22,64 @@ export default function PlaylistDetail() {
 	// }, [id])
 
 	useEffect(() => {
-			const fetchPlaylist = async () => {
-				const token = await getAccessToken();
-				if (!token) {console.warn('Không tìm thấy access token'); return;}
-	
-				try {
-					//lấy thông tin chi tiết bài hát
-					const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/user-playlists/${id}/`, {
-						method: 'GET',
-						headers: {
-							'Authorization': `Bearer ${token}`,
-							'Content-Type': 'application/json',
-						}
-					});
-					if(!res.ok) {
-						console.error('Failed to fetch playlist detail');
-						return;
+		const fetchPlaylist = async () => {
+			const token = await getAccessToken();
+			if (!token) {console.warn('Không tìm thấy access token'); return;}
+
+			try {
+				//lấy thông tin chi tiết bài hát
+				const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/user-playlists/${id}/`, {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json',
 					}
-					const data = await res.json();
-					console.log('Chi tiết playlist: ', data);
-	
-					//lấy danh sách bài từ json
-					const albumSong: SongProps[] = data.songs.map((item: SongPropsFromJSON) => ({
-						id: item.id,
-						title: item.title,
-						artist: {
-							id: item.musicians[0].id,
-							name: item.musicians[0].musician_name,
-						},
-						albumArt: item.albumArt,
-						duration: item.duration,
-						dayAdd: item.day_add,
-						views: item.views,
-						album: {
-							id: item.album?.id,
-							name: item.album?.album_name,
-						},
-					}))
-	
-					//chuyển đổi sang type Musician
-					const formattedData: Playlist = {
-						id: data.id,
-						playlistName: data.playlist_name,
-						coverUrl: data.cover_image,
-						description: data.description,
-						createdby: data.user_id,
-						dayAdd: data.created_at,
-						dayUpdate: data.updated_at,
-						songs: albumSong,
-					}
-					
-					setPlaylist(formattedData);
-				} catch (err) {
-					console.error('Error fetching musicians: ', err);
+				});
+				if(!res.ok) {
+					console.error('Failed to fetch playlist detail');
+					return;
 				}
-			};
-			fetchPlaylist();
-		}, [getAccessToken, id])
+				const data = await res.json();
+				console.log('Chi tiết playlist: ', data);
+
+
+
+				//lấy danh sách bài từ json
+				const albumSong: SongProps[] = data.songs.map((item: SongPropsFromJSON) => ({
+					id: item.id,
+					title: item.title,
+					artist: {
+						id: item.musicians[0].id,
+						name: item.musicians[0].musician_name,
+					},
+					albumArt: item.albumArt,
+					duration: item.duration,
+					dayAdd: item.day_add,
+					views: item.views,
+					album: {
+						id: item.album?.id,
+						name: item.album?.album_name,
+					},
+				}))
+
+				//chuyển đổi sang type Musician
+				const formattedData: Playlist = {
+					id: data.id,
+					playlistName: data.playlist_name,
+					coverUrl: data.cover_image,
+					description: data.description,
+					createdby: data.username,
+					dayAdd: data.created_at,
+					dayUpdate: data.updated_at,
+					songs: albumSong,
+				}
+				setPlaylist(formattedData);
+			} catch (err) {
+				console.error('Error fetching musicians: ', err);
+			}
+		};
+		fetchPlaylist();
+	}, [getAccessToken, id])
 	
 
 	// hàm tính thời gian
