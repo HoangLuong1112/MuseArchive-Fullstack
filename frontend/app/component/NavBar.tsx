@@ -22,15 +22,15 @@ const NavBar: React.FC = () => {
         <div className="w-full h-16 px-6 flex items-center justify-between text-white shadow-sm relative py-4 bg-blue-950">
             {/* Left: Spotify logo */}
             <div className="flex items-center gap-2">
-                {/* <Link href={"/"}> */}
+                <Link href={"/"}>
                     <Image src="https://upload.wikimedia.org/wikipedia/commons/7/78/Spotify_2.png" alt="Spotify Logo" width={32} height={32}/>
-                {/* </Link> */}
+                </Link>
             </div>
 
             {/* Center: Home + Search */}
-            <div className="flex items-center gap-6 w-1/2 justify-center">
-                <Link href={"/"}>
-                    <button className="flex items-center gap-2 text-sm font-medium hover:text-green-400 transition cursor-pointer">
+            <div className="flex items-center gap-6 w-1/2 justify-center group">
+                <Link href={"/"} className=''>
+                    <button className="flex items-center gap-2 font-medium text-green-500 hover:text-green-300 transition cursor-pointer">
                         <Home size={20} />
                         <span>Trang chủ</span>
                     </button>
@@ -48,7 +48,7 @@ const NavBar: React.FC = () => {
                 {/* User Avatar with dropdown (chỉ hiện nếu đã đăng nhập) */}
                 {currentUser ? (
                     <div className="relative group">
-                        <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-2 rounded-full px-3 py-1 bg-zinc-200 group-hover:bg-zinc-400 transition">
+                        <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-2 rounded-full px-3 py-2 bg-green-500 group-hover:bg-green-400 transition">
                             
                             {currentUser?.avatarPic ? (
                                 <Image src={currentUser.avatarPic} alt="avatar" width={24} height={24} className="rounded-full" />
@@ -57,7 +57,7 @@ const NavBar: React.FC = () => {
                                     {currentUser.userName.charAt(0).toUpperCase()}
                                 </div>
                             )}
-                            <div className='text-black group-hover:text-white'>
+                            <div className='text-white group-hover:text-white'>
                                 <ChevronDown size={16} />
                             </div>
                            

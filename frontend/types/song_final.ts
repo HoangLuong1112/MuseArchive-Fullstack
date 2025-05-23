@@ -57,6 +57,7 @@ export type Musician = {
         youtubeLink?: string;   
     }
     isVerified?: boolean;
+    isFollowed?: boolean;
 
     topSongs?: SongProps[]; //  2 cái danh sách top song và album, hoạt động như songs?: SongProps[] trên album
     albums?: Album[];   //      danh sách album của nhạc sĩ đó, để id rồi search bài hát ?

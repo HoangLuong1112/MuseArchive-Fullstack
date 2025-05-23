@@ -44,8 +44,10 @@ export default function Banner({type, coverUrl, name, description, musician, cre
                     {dayAdd &&(
                         <span title={dayAdd} className="before:content-['•'] before:mx-2 text-gray-300">{year}</span>
                     )}
-                    { numberofsong && (
+                    { numberofsong ? (
                         <span className="before:content-['•'] before:mx-2 text-gray-300">{numberofsong} bài hát</span>
+                    ): (
+                        <span className="before:content-['•'] before:mx-2 text-gray-300">0 bài hát</span>
                     )}
                     <span className="before:content-['•'] before:mx-2 text-gray-300">{duration}</span>
                     { views && (
