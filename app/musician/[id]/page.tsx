@@ -11,20 +11,17 @@ import Carousel from '@/app/component/Carousel'
 import AlbumCard from '@/app/component/AlbumCard'
 import Link from 'next/link'
 import { useAuth } from '@/app/context/AuthContext'
-// import SongList from '@/app/component/SongList'
 
 export default function MusicianDetail() {
     const { id } = useParams();           //Dùng useParams() để lấy id từ URL: ví dụ /playlist/1 → id = '1'
-    const { getAccessToken } = useAuth();
+    const { currentUser,getAccessToken } = useAuth();
     const [musician, setMusician] = useState<Musician | null>(null);
     const [activeTab, setActiveTab] = useState<'popular' | 'albums'>('popular');
     const [isFollowing, setIsFollowing] = useState(false);
 
-    // useEffect(() => {
-    //     fetch(`/api/musicians/${id}`)
-    //     .then(res => res.json())
-    //     .then(data => setMusician(data))
-    // }, [id])
+    const [localFollowers, setLocalFollowers] = useState(0);
+
+
     useEffect(() => {
         const fetchMusicianDetail = async () => {
             const token = await getAccessToken();
@@ -64,10 +61,12 @@ export default function MusicianDetail() {
                         youtubeLink: data.social_media.youtubeLink, 
                     }, 
                     isVerified: data.is_verified,
+                    isFollowed: data.is_followed,
                     topSongs: [],
                     albums: [],
                 }
-                
+                setIsFollowing(data.is_followed);
+                setLocalFollowers(data.number_of_follower);
                 setMusician(formattedData);
             } catch (err) {
                 console.error('Error fetching musicians: ', err);
@@ -76,18 +75,60 @@ export default function MusicianDetail() {
         fetchMusicianDetail();
     }, [getAccessToken, id])
 
-    // hàm theo dõi, làm tạm cập nhập follower
-    const toggleFollow = () => {
-        if (!musician) return;
-        const follower = musician.follower ?? 0;
+    useEffect(()=> {
+        const fetchMusicianTopSongs = async () => {
+            const token = await getAccessToken();
+            if (!token) {
+                console.warn('Không tìm thấy access token');
+                return;
+            }
 
-        const updatedMusician = {
-            ...musician,
-            follower: isFollowing ? follower - 1 : follower + 1
+            try {
+                //lấy thông tin 
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/NNNNNNNs/${id}/top-songs/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+                if(!res.ok) {
+                    console.error('Failed to fetch musician detail');
+                    return;
+                }
+                const data = await res.json();
+                console.log('Chi tiết nhạc sĩ: ', data);
+
+            } catch (err) {
+                console.error('Error fetching musicians: ', err);
+            }
         };
-        setMusician(updatedMusician)
+        fetchMusicianTopSongs();
+    })
+    
 
-        setIsFollowing(!isFollowing);
+    // hàm theo dõi, làm tạm cập nhập follower
+    const toggleFollow = async () => {
+        try {
+            const token = await getAccessToken();
+            const url = `${process.env.NEXT_PUBLIC_API_URL}api/musicians/${musician?.id}/${isFollowing ? 'unfollow':'follow'}/`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ id: currentUser?.id }),
+            })
+            if (!res.ok) throw new Error(`Lỗi khi ${isFollowing ? 'theo dõi' : 'huỷ theo dõi'}`);
+
+            setIsFollowing(!isFollowing);
+            setLocalFollowers(prev => isFollowing ? prev - 1 : prev + 1);
+                
+        } catch (err) {
+            console.error('Lỗi khi nhấn theo dõi:', err);
+            alert('Có lỗi khi nhấn theo dõi');
+        }
     }
 
     if (!musician) return <div className="p-4">Đang tải...</div>
@@ -117,7 +158,8 @@ export default function MusicianDetail() {
                             <div className="flex items-center gap-4 mt-4">
                                 <div className="flex items-center gap-1">
                                     <BsFillPeopleFill />
-                                    <span>{musician.follower} follower</span>
+                                    {/* <span>{musician.follower} follower</span> */}
+                                    <span>{localFollowers} follower</span>
                                 </div>
                                 <button onClick={toggleFollow} className={`px-4 py-1 rounded-full font-semibold ${isFollowing ? 'bg-white text-black' : 'bg-transparent border border-white'}`}>
                                     {isFollowing ? 'Following' : 'Follow'}
