@@ -90,7 +90,9 @@ export default function TrackDetail() {
                     }
                 });
 
-                if (!res.ok) throw new Error("Không lấy đc stream video");
+                if (!res.ok) {
+                    return;
+                }
                 const blob = await res.blob();
                 const url = URL.createObjectURL(blob);
                 setVideoUrl(url);

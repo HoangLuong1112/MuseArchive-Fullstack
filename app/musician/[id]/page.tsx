@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Musician } from '@/types/song_final'
+import { Musician, SongProps, SongPropsFromJSON } from '@/types/song_final'
 import Image from 'next/image'
 import { BsFillPeopleFill } from 'react-icons/bs'
 import { FaCheck, FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'
@@ -12,6 +12,7 @@ import AlbumCard from '@/app/component/AlbumCard'
 import Link from 'next/link'
 import { useAuth } from '@/app/context/AuthContext'
 
+
 export default function MusicianDetail() {
     const { id } = useParams();           //Dùng useParams() để lấy id từ URL: ví dụ /playlist/1 → id = '1'
     const { currentUser,getAccessToken } = useAuth();
@@ -20,7 +21,7 @@ export default function MusicianDetail() {
     const [isFollowing, setIsFollowing] = useState(false);
 
     const [localFollowers, setLocalFollowers] = useState(0);
-
+    const [topSongs, setTopSongs] = useState<SongProps[]>([]);
 
     useEffect(() => {
         const fetchMusicianDetail = async () => {
@@ -85,7 +86,7 @@ export default function MusicianDetail() {
 
             try {
                 //lấy thông tin 
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/NNNNNNNs/${id}/top-songs/`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/songs/`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -93,14 +94,45 @@ export default function MusicianDetail() {
                     }
                 });
                 if(!res.ok) {
-                    console.error('Failed to fetch musician detail');
+                    console.error('Failed to fetch song detail - Musician');
                     return;
                 }
                 const data = await res.json();
-                console.log('Chi tiết nhạc sĩ: ', data);
+                console.log('Trả về danh sách bài hát: ', data);
+
+                //lấy danh sách bài từ json
+                const songlistfromjson: SongProps[] = data.map((item: SongPropsFromJSON) => ({
+                    id: item.id,
+                    title: item.title,
+                    artist: {
+                        id: item.musicians[0].id,
+                        name: item.musicians[0].musician_name,
+                    },
+                    albumArt: item.albumArt,
+                    duration: item.duration,
+                    dayAdd: item.day_add,
+                    views: item.views,
+                    album: {
+                        id: item.album?.id,
+                        name: item.album?.album_name,
+                    },
+                }))
+
+
+
+                let topSongs: SongProps[] = [];
+                //lọc ra danh sách bài hát của nhạc sĩ
+                topSongs = songlistfromjson.filter((song: SongProps) => song.artist.id === musician?.id);
+                //sắp sếp theo views
+                topSongs.sort((a: SongProps, b: SongProps) => b.views - a.views);
+                //lấy 10 bài đầu
+                topSongs = topSongs.slice(0, 10);
+                setTopSongs(topSongs);
+
+                
 
             } catch (err) {
-                console.error('Error fetching musicians: ', err);
+                console.error('Error fetching songs list: ', err);
             }
         };
         fetchMusicianTopSongs();
@@ -189,7 +221,7 @@ export default function MusicianDetail() {
                             <span className='text-4xl font-bold'>Các bài hát phổ biến</span>
                         </div>
                         {/* Danh sách bài hát phổ biến */}
-                        <SongList songlist={musician.topSongs} />
+                        <SongList songlist={topSongs} />
                     </div>
                 ) : (
                     <div>
